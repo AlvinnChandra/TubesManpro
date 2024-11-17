@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/Transaksi.css">
     <script defer src="script.js"></script>
 </head>
 
@@ -16,9 +17,10 @@
             <ul>
                 <li><a href="Admin.html">Data Pegawai</a></li>
                 <li><a href="dataKelurahan.html">Data Kelurahan/Kecamatan</a></li>
-                <li><a href="dataPelanggan.html">Data Pelanggan</li>
+                <li><a href="dataPelanggan.html">Data Pelanggan</a></li>
                 <li><a href="dataMesin.html">Data Mesin Cuci & Tarif</a></li>
                 <li><a href="dataTransaksi.html">Data Transaksi</a></li>
+                <br><br>
                 <li><a href="Login.html">Log Out</a></li>
             </ul>
         </nav>
@@ -31,7 +33,46 @@
 
         <section id="data-transaksi">
             <h2>Data Transaksi</h2>
-            <button type="button">Tambah Transaksi</button>
+            <button id="tambah-transaksi-button" type="button">Tambah Transaksi</button>
+            <div id="form-tambah-transaksi" style="display: none;">
+                <h3>Form Tambah Transaksi</h3>
+                <form id="form-transaksi">
+                    <div>
+                        <label for="id">ID:</label>
+                        <input type="text" id="id" name="id" required>
+                    </div>
+                    <div>
+                        <label for="pelanggan">Nama Pelanggan:</label>
+                        <input type="text" id="pelanggan" name="pelanggan" required>
+                    </div>
+                    <div>
+                        <label for="merek">Merek:</label>
+                        <input type="text" id="merek" name="merek" required>
+                    </div>
+                    <div>
+                        <label for="tanggal">Tanggal:</label>
+                        <input type="date" id="tanggal" name="tanggal" required>
+                    </div>
+                    <div>
+                        <label for="lama">Lama waktu pemakaian (dalam menit):</label>
+                        <input type="number" id="lama" name="lama" required min="0">
+                    </div>
+                    <div>
+                        <label for="jam_mulai">Jam Mulai:</label>
+                        <input type="time" id="jam_mulai" name="jam_mulai" required>
+                    </div>
+                    <div>
+                        <label for="jam_selesai">Jam Selesai:</label>
+                        <input type="time" id="jam_selesai" name="jam_selesai" required>
+                    </div>
+                    <div>
+                        <label for="tarif">Tarif:</label>
+                        <input type="number" id="tarif" name="tarif" required min="0">
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-transaksi-button">Batal</button>
+                </form>
+            </div>
             <table>
                 <tr>
                     <th>ID</th>
@@ -41,7 +82,7 @@
                     <th>Lama waktu pemakaian (dalam menit)</th>
                     <th>Jam Mulai</th>
                     <th>Jam Selesai</th>
-                    <th>Total Tarif</th>
+                    <th>Tarif</th>
                     <th>Aksi</th>
                 </tr>
 
@@ -65,7 +106,22 @@
                 </tbody> -->
             </table>
         </section>
+
+        <script>
+            const tambahTransaksiButton = document.getElementById('tambah-transaksi-button');
+            const formTambahTransaksi = document.getElementById('form-tambah-transaksi');
+            const cancelTransaksiButton = document.getElementById('cancel-transaksi-button');
+
+            tambahTransaksiButton.addEventListener('click', () => {
+                formTambahTransaksi.style.display = 'block';
+                tambahTransaksiButton.style.display = 'none';
+            });
+
+            cancelTransaksiButton.addEventListener('click', () => {
+                formTambahTransaksi.style.display = 'none';
+                tambahTransaksiButton.style.display = 'block';
+            });
+        </script>
     </div>
-</body>
 
 </html>

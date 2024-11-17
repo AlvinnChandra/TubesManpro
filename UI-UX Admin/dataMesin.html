@@ -17,9 +17,10 @@
             <ul>
                 <li><a href="Admin.html">Data Pegawai</a></li>
                 <li><a href="dataKelurahan.html">Data Kelurahan/Kecamatan</a></li>
-                <li><a href="dataPelanggan.html">Data Pelanggan</li>
+                <li><a href="dataPelanggan.html">Data Pelanggan</a></li>
                 <li><a href="dataMesin.html">Data Mesin Cuci & Tarif</a></li>
                 <li><a href="dataTransaksi.html">Data Transaksi</a></li>
+                <br><br>
                 <li><a href="Login.html">Log Out</a></li>
             </ul>
         </nav>
@@ -51,7 +52,7 @@
                     </div>
                     <div>
                         <label for="tarif">Tarif per 15 menit:</label>
-                        <input type="number" id="tarif" name="tarif" required>
+                        <input type="number" id="tarif" name="tarif" required min="0">
                     </div>
                     <button type="submit">Simpan</button>
                     <button type="button" id="cancel-mesin-button">Batal</button>
@@ -98,7 +99,6 @@
         const tambahMesinButton = document.getElementById('tambah-mesin-button');
         const formTambahMesin = document.getElementById('form-tambah-mesin');
         const cancelMesinButton = document.getElementById('cancel-mesin-button');
-        const overlay = document.querySelector('.overlay');
 
         tambahMesinButton.addEventListener('click', () => {
             formTambahMesin.style.display = 'block';

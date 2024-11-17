@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="css/style.css">
-    <script defer src="script.js"></script>
+    <link rel="stylesheet" href="css/Pelanggan.css">
+    </style>
 </head>
 
 <body>
@@ -16,9 +17,10 @@
             <ul>
                 <li><a href="Admin.html">Data Pegawai</a></li>
                 <li><a href="dataKelurahan.html">Data Kelurahan/Kecamatan</a></li>
-                <li><a href="dataPelanggan.html">Data Pelanggan</li>
+                <li><a href="dataPelanggan.html">Data Pelanggan</a></li>
                 <li><a href="dataMesin.html">Data Mesin Cuci & Tarif</a></li>
                 <li><a href="dataTransaksi.html">Data Transaksi</a></li>
+                <br><br>
                 <li><a href="Login.html">Log Out</a></li>
             </ul>
         </nav>
@@ -67,13 +69,12 @@
                 <tr>
                     <th>ID</th>
                     <th>Nama</th>
-                    <th>No.Telepon</th>
+                    <th>No. Telepon</th>
                     <th>Email</th>
                     <th>Kecamatan</th>
                     <th>Kelurahan</th>
                     <th>Aksi</th>
                 </tr>
-
                 <tr>
                     <td>1</td>
                     <td>Manuel</td>
@@ -86,12 +87,11 @@
                         <button type="button">Delete</button>
                     </td>
                 </tr>
-
                 <tr>
                     <td>2</td>
                     <td>Teja</td>
                     <td>87654321</td>
-                    <td>Teja@gmail.com</td>
+                    <td>teja@gmail.com</td>
                     <td>Cidadap</td>
                     <td>Hegarmanah</td>
                     <td>
@@ -99,9 +99,6 @@
                         <button type="button">Delete</button>
                     </td>
                 </tr>
-                <!-- <tbody id="pelanggan-table">
-                    <Data akan diisi di sini>
-                </tbody> -->
             </table>
         </section>
     </div>
@@ -112,12 +109,15 @@
         const cancelPelangganButton = document.getElementById('cancel-pelanggan-button');
 
         tambahPelangganButton.addEventListener('click', () => {
-            showForm('form-tambah-pelanggan', 'tambah-pelanggan-button');
+            formTambahPelanggan.style.display = 'block';
+            tambahPelangganButton.style.display = 'none';
         });
 
         cancelPelangganButton.addEventListener('click', () => {
-            hideForm('form-tambah-pelanggan', 'tambah-pelanggan-button');
+            formTambahPelanggan.style.display = 'none';
+            tambahPelangganButton.style.display = 'block';
         });
     </script>
+</body>
 
 </html>
