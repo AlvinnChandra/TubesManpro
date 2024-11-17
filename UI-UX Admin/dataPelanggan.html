@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a href="Admin.html">Data Pegawai</a></li>
+                <li><a href="dataKelurahan.html">Data Kelurahan/Kecamatan</a></li>
+                <li><a href="dataPelanggan.html">Data Pelanggan</li>
+                <li><a href="dataMesin.html">Data Mesin Cuci & Tarif</a></li>
+                <li><a href="dataTransaksi.html">Data Transaksi</a></li>
+                <li><a href="Login.html">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <h1>Selamat Datang, Admin!</h1>
+        </header>
+
+        <section id="data-pelanggan">
+            <h2>Data Pelanggan</h2>
+            <button id="tambah-pelanggan-button" type="button">Tambah Pelanggan</button>
+            <div id="form-tambah-pelanggan" style="display: none;">
+                <h3>Form Tambah Pelanggan</h3>
+                <form id="form-pelanggan">
+                    <div>
+                        <label for="id">ID:</label>
+                        <input type="text" id="id" name="id" required>
+                    </div>
+                    <div>
+                        <label for="nama">Nama:</label>
+                        <input type="text" id="nama" name="nama" required>
+                    </div>
+                    <div>
+                        <label for="telepon">No. Telepon:</label>
+                        <input type="text" id="telepon" name="telepon" required>
+                    </div>
+                    <div>
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div>
+                        <label for="kecamatan">Kecamatan:</label>
+                        <input type="text" id="kecamatan" name="kecamatan" required>
+                    </div>
+                    <div>
+                        <label for="kelurahan">Kelurahan:</label>
+                        <input type="text" id="kelurahan" name="kelurahan" required>
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-pelanggan-button">Batal</button>
+                </form>
+            </div>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>No.Telepon</th>
+                    <th>Email</th>
+                    <th>Kecamatan</th>
+                    <th>Kelurahan</th>
+                    <th>Aksi</th>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>Manuel</td>
+                    <td>12345678</td>
+                    <td>manuel@gmail.com</td>
+                    <td>Margaasih</td>
+                    <td>Rahayu</td>
+                    <td>
+                        <button type="button">Edit</button>
+                        <button type="button">Delete</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>Teja</td>
+                    <td>87654321</td>
+                    <td>Teja@gmail.com</td>
+                    <td>Cidadap</td>
+                    <td>Hegarmanah</td>
+                    <td>
+                        <button type="button">Edit</button>
+                        <button type="button">Delete</button>
+                    </td>
+                </tr>
+                <!-- <tbody id="pelanggan-table">
+                    <Data akan diisi di sini>
+                </tbody> -->
+            </table>
+        </section>
+    </div>
+
+    <script>
+        const tambahPelangganButton = document.getElementById('tambah-pelanggan-button');
+        const formTambahPelanggan = document.getElementById('form-tambah-pelanggan');
+        const cancelPelangganButton = document.getElementById('cancel-pelanggan-button');
+
+        tambahPelangganButton.addEventListener('click', () => {
+            showForm('form-tambah-pelanggan', 'tambah-pelanggan-button');
+        });
+
+        cancelPelangganButton.addEventListener('click', () => {
+            hideForm('form-tambah-pelanggan', 'tambah-pelanggan-button');
+        });
+    </script>
+
+</html>

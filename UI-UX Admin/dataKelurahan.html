@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/Kelurahan.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a href="Admin.html">Data Pegawai</a></li>
+                <li><a href="dataKelurahan.html">Data Kelurahan/Kecamatan</a></li>
+                <li><a href="dataPelanggan.html">Data Pelanggan</li>
+                <li><a href="dataMesin.html">Data Mesin Cuci & Tarif</a></li>
+                <li><a href="dataTransaksi.html">Data Transaksi</a></li>
+                <li><a href="Login.html">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <h1>Selamat Datang, Admin!</h1>
+        </header>
+
+        <section id="data-lokasi">
+            <h2>Data Kelurahan/Kecamatan</h2>
+            <button id="tambah-lokasi-button" type="button">Tambah Lokasi</button>
+            <div id="form-tambah-lokasi" style="display: none;">
+                <h3>Form Tambah Lokasi</h3>
+                <form id="form-lokasi">
+                    <div>
+                        <label for="id">ID:</label>
+                        <input type="text" id="id" name="id" required>
+                    </div>
+                    <div>
+                        <label for="kecamatan">Kecamatan:</label>
+                        <input type="text" id="kecamatan" name="kecamatan" required>
+                    </div>
+                    <div>
+                        <label for="kelurahan">Kelurahan:</label>
+                        <input type="text" id="kelurahan" name="kelurahan" required>
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-lokasi-button">Batal</button>
+                </form>
+            </div>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Kecamatan</th>
+                    <th>Kelurahan</th>
+                    <th>Aksi</th>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>Margaasih</td>
+                    <td>Rahayu</td>
+                    <td>
+                        <button type="button">Edit</button>
+                        <button type="button">Delete</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>Cidadap</td>
+                    <td>Hegarmanah</td>
+                    <td>
+                        <button type="button">Edit</button>
+                        <button type="button">Delete</button>
+                    </td>
+                </tr>
+                <!-- <tbody id="lokasi-table">
+                    <Data akan diisi di sini>
+                </tbody> -->
+            </table>
+        </section>
+
+
+    </div>
+
+    <script>
+        const tambahLokasiButton = document.getElementById('tambah-lokasi-button');
+        const formTambahLokasi = document.getElementById('form-tambah-lokasi');
+        const cancelLokasiButton = document.getElementById('cancel-lokasi-button');
+        const overlay = document.querySelector('.overlay');
+
+        tambahLokasiButton.addEventListener('click', () => {
+            formTambahLokasi.style.display = 'block';
+            tambahLokasiButton.style.display = 'none';
+            overlay.classList.add('show');
+        });
+
+        cancelLokasiButton.addEventListener('click', () => {
+            formTambahLokasi.style.display = 'none';
+            tambahLokasiButton.style.display = 'block';
+            overlay.classList.remove('show');
+        });
+    </script>
+
+</body>
+
+</html>

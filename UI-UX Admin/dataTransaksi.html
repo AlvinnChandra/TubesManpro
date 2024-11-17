@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a href="Admin.html">Data Pegawai</a></li>
+                <li><a href="dataKelurahan.html">Data Kelurahan/Kecamatan</a></li>
+                <li><a href="dataPelanggan.html">Data Pelanggan</li>
+                <li><a href="dataMesin.html">Data Mesin Cuci & Tarif</a></li>
+                <li><a href="dataTransaksi.html">Data Transaksi</a></li>
+                <li><a href="Login.html">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <h1>Selamat Datang, Admin!</h1>
+        </header>
+
+        <section id="data-transaksi">
+            <h2>Data Transaksi</h2>
+            <button type="button">Tambah Transaksi</button>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Pelanggan</th>
+                    <th>Merek</th>
+                    <th>Tanggal</th>
+                    <th>Lama waktu pemakaian (dalam menit)</th>
+                    <th>Jam Mulai</th>
+                    <th>Jam Selesai</th>
+                    <th>Total Tarif</th>
+                    <th>Aksi</th>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>Manuel</td>
+                    <td>Panasonic</td>
+                    <td>2-11-2024</td>
+                    <td>30</td>
+                    <td>09:10:15</td>
+                    <td>09:40:15</td>
+                    <td>450.000</td>
+                    <td>
+                        <button type="button">Edit</button>
+                        <button type="button">Delete</button>
+                    </td>
+                </tr>
+
+                <!-- <tbody id="transaksi-table">
+                    <Data akan diisi di sini>
+                </tbody> -->
+            </table>
+        </section>
+    </div>
+</body>
+
+</html>
