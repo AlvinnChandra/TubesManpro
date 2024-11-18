@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    <title>Newci Wash Master</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/DataMesin.css">
     <script defer src="script.js"></script>
@@ -20,8 +20,8 @@
                 <li><a href="dataPelanggan.html">Data Pelanggan</a></li>
                 <li><a href="dataMesin.html">Data Mesin Cuci & Tarif</a></li>
                 <li><a href="dataTransaksi.html">Data Transaksi</a></li>
-                <br><br>
-                <li><a href="Login.html">Log Out</a></li>
+                <br><br><br><br><br><br><br><br>
+                <li id="logout"><a href="Login.html">Log Out</a></li>
             </ul>
         </nav>
     </div>
@@ -38,20 +38,14 @@
             <div id="form-tambah-mesin" style="display: none;">
                 <h3>Form Tambah Mesin</h3>
                 <form id="form-mesin">
-                    <div>
-                        <label for="id">ID:</label>
+                    <div class="masukan">
+                        <label for="id">ID</label>
                         <input type="text" id="id" name="id" required>
-                    </div>
-                    <div>
-                        <label for="merek">Merek:</label>
+                        <label for="merek">Merek</label>
                         <input type="text" id="merek" name="merek" required>
-                    </div>
-                    <div>
-                        <label for="kapasitas">Kapasitas (dalam kg):</label>
+                        <label for="kapasitas">Kapasitas (dalam kg)</label>
                         <input type="number" id="kapasitas" name="kapasitas" required min="0">
-                    </div>
-                    <div>
-                        <label for="tarif">Tarif per 15 menit:</label>
+                        <label for="tarif">Tarif per 15 menit</label>
                         <input type="number" id="tarif" name="tarif" required min="0">
                     </div>
                     <button type="submit">Simpan</button>
