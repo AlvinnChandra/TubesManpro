@@ -1,2 +1,2 @@
-# TubesManpro
-Buatkan UI/UX untuk fitur pelanggan
+# TubesManpr
+Buatkan UI/UX untuk fitur pelanggaan
