@@ -54,3 +54,22 @@
 #filterTgl #cancel-button:hover {
     background-color: #c82333;
 }
+
+#masukan {
+    display: grid;
+    grid-template-columns: 250px 250px;
+    justify-content: center; 
+    row-gap: 10px;  
+    align-items: center;
+}
+
+div :only-of-type label {
+    grid-column: 1;
+    margin-left: 75px;
+    
+}
+
+div :only-of-type input {
+    grid-column: 2;
+    margin-right: 75px;
+}
