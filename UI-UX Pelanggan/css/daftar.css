@@ -4,7 +4,7 @@ button:disabled{
     opacity: 0.7;
 }
 
-#pop-up-sewa {
+#pop-up-sewa, #form-sewa-mesin {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -21,7 +21,7 @@ button:disabled{
     gap: 10px;
 }
 
-#pop-up-sewa h2{
+#pop-up-sewa h2, #form-sewa-mesin h3{
     text-align: center;
     margin-bottom: 20px;
 }
@@ -47,4 +47,13 @@ button:disabled{
 
 #pop-up-sewa #batal:hover{
     background-color: #c82333;
+}
+
+#form-sewa-mesin h5{
+    color: #494d51;
+}
+
+#form-sewa-mesin h3 span {
+    font-weight: bold;
+    color: #007bff;
 }

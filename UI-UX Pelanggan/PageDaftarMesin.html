@@ -67,28 +67,66 @@
                     </td>
                 </tr>
             </table>
-            <div id="pop-up-sewa" style="display: none;">
-                <h2>Apakah anda setuju ingin menyewa mesin cuci ini?</h2>
-                <button id="setuju">Ya</button>
-                <button id="batal">Batalkan</button>
+
+            <div id="form-sewa-mesin" style="display: none;">
+                <h3>Masukkan waktu sewa mesin cuci</h3>
+                <h5>Mohon untuk memasukkan waktu dengan kelipatan 15 menit!</h5>
+                <form id="sewa">
+                    <div>
+                        <label for="waktu-sewa">Waktu Sewa (menit):</label>
+                        <input type="number" name="waktu" id="waktu" min="15" step="15" required>
+                    </div>
+                </form>
+                <h3>Total Sewa: <span id="total-sewa">0</span></h3>
+                <button id="buttonSewa">Sewa</button>
+
+                <div id="pop-up-sewa" style="display: none;">
+                    <h2>Apakah anda setuju ingin menyewa mesin cuci ini?</h2>
+                    <button id="setuju">Ya</button>
+                    <button id="batal">Batalkan</button>
+                </div>
             </div>
         </section>
     </div>
 
     <script>
         const tombolStatus = document.querySelectorAll(".available");
-        const popUp = document.getElementById("pop-up-sewa");
+        const formSewa = document.getElementById("form-sewa-mesin");
+        const waktuInput = document.getElementById("waktu");
+        const totalSewaEl = document.getElementById("total-sewa");
+        const buttonSewa = document.getElementById("buttonSewa");
 
+        const popUp = document.getElementById("pop-up-sewa");
         const tombolSetuju = document.getElementById("setuju");
         const tombolBatal = document.getElementById("batal");
 
         let selectedButton = null;
+        let hargaPer15Menit = 0;
 
         tombolStatus.forEach(button => {
-            button.addEventListener('click', () => {
-                popUp.style.display = 'block';
+            button.addEventListener('click', (event) => {
+                const row = event.target.closest('tr');
+                const hargaText = row.cells[2].textContent;
+                hargaPer15Menit = parseInt(hargaText.replace('.', ''));
+                
+                formSewa.style.display = 'block';
                 selectedButton = button;
             });
+        });
+
+        waktuInput.addEventListener('input', () => {
+            const waktu = parseInt(waktuInput.value) || 0;
+            const totalSewa = (waktu / 15) * hargaPer15Menit;
+            totalSewaEl.textContent = totalSewa.toLocaleString();
+        });
+
+        buttonSewa.addEventListener('click', () => {
+            const waktu = parseInt(waktuInput.value);
+            if (waktu > 0 && waktu % 15 === 0) {
+                popUp.style.display = 'block';
+            } else {
+                alert("Mohon masukkan waktu sewa dalam kelipatan 15 menit!");
+            }
         });
 
         tombolSetuju.addEventListener('click', () => {
@@ -100,6 +138,9 @@
                 selectedButton = null;
             }
             popUp.style.display = 'none';
+            formSewa.style.display = 'none';
+            totalSewaEl.textContent = '0';
+            waktuInput.value = '';
         });
 
         tombolBatal.addEventListener('click', () => {
