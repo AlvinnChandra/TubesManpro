@@ -146,6 +146,8 @@
         tombolBatal.addEventListener('click', () => {
             popUp.style.display = 'none';
             formSewa.style.display = 'none';
+            totalSewaEl.textContent = '0';
+            waktuInput.value = '';
             selectedButton = null;
         });
     </script>
