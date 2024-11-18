@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/Pegawai.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a href="Admin.html">Data Pegawai</a></li>
+                <li><a href="dataKelurahan.html">Data Kelurahan/Kecamatan</a></li>
+                <li><a href="dataPelanggan.html">Data Pelanggan</a></li>
+                <li><a href="dataMesin.html">Data Mesin Cuci & Tarif</a></li>
+                <li><a href="dataTransaksi.html">Data Transaksi</a></li>
+                <br><br>
+                <li><a href="Login.html">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <h1>Selamat Datang, Admin!</h1>
+        </header>
+
+        <section id="data-pegawai">
+            <h2>Data Pegawai</h2>
+            <button id="tambah-pegawai-button" type="button">Tambah Pegawai</button>
+            <div id="form-tambah-pegawai" style="display: none;">
+                <h3>Form Tambah Pegawai</h3>
+                <form id="form-pegawai">
+                    <div>
+                        <label for="id">ID:</label>
+                        <input type="text" id="id" name="id" required>
+                    </div>
+                    <div>
+                        <label for="nama">Nama:</label>
+                        <input type="text" id="nama" name="nama" required>
+                    </div>
+                    <div>
+                        <label for="posisi">Posisi:</label>
+                        <input type="text" id="posisi" name="posisi" required>
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-button">Batal</button>
+                </form>
+            </div>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Posisi</th>
+                    <th>Aksi</th>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>Alvin Chandra</td>
+                    <td>Manager</td>
+                    <td>
+                        <button type="button">Edit</button>
+                        <button type="button">Delete</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>Juan Farrel</td>
+                    <td>Staff</td>
+                    <td>
+                        <button type="button">Edit</button>
+                        <button type="button">Delete</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td>ZefanDion</td>
+                    <td>Staff</td>
+                    <td>
+                        <button type="button">Edit</button>
+                        <button type="button">Delete</button>
+                    </td>
+                </tr>
+                <!-- <tbody id="pegawai-table">
+                    <Data akan diisi di sini>
+                </tbody> -->
+            </table>
+        </section>
+    </div>
+
+    <script>
+        const tambahPegawaiButton = document.getElementById('tambah-pegawai-button');
+        const formTambahPegawai = document.getElementById('form-tambah-pegawai');
+        const cancelButton = document.getElementById('cancel-button');
+
+        tambahPegawaiButton.addEventListener('click', () => {
+            formTambahPegawai.style.display = 'block';
+            tambahPegawaiButton.style.display = 'none';
+        });
+
+        cancelButton.addEventListener('click', () => {
+            formTambahPegawai.style.display = 'none';
+            tambahPegawaiButton.style.display = 'block';
+        });
+    </script>
+</body>
+
+</html>

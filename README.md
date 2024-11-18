@@ -1,2 +1,3 @@
 # TubesManpro
-Buatkan UI/UX untuk fitur pemilik
+<<<<<<< HEAD
+Buatkan UI/UX untuk fitur admin
