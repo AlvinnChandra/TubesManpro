@@ -1,3 +1,50 @@
-#not-available{
+button:disabled{
     background-color: red;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+#pop-up-sewa {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 500px;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#pop-up-sewa h2{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#pop-up-sewa button{
+    background-color: #20cc0f;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-right: 10px;
+}
+
+#pop-up-sewa button:hover{
+    background-color: #309e25;
+}
+
+#pop-up-sewa #batal{
+    background-color: #dc3545;
+}
+
+#pop-up-sewa #batal:hover{
+    background-color: #c82333;
 }

@@ -45,7 +45,7 @@
                     <td>20</td>
                     <td>15.000</td>
                     <td>
-                        <button type="button" id="available">Available</button>
+                        <button type="button" class="available">Available</button>
                     </td>
                 </tr>
 
@@ -54,7 +54,7 @@
                     <td>10</td>
                     <td>10.000</td>
                     <td>
-                        <button type="button" id="available">Available</button>
+                        <button type="button" class="available">Available</button>
                     </td>
                 </tr>
 
@@ -63,12 +63,50 @@
                     <td>12</td>
                     <td>11.000</td>
                     <td>
-                        <button type="button" id="not-available">Not Available</button>
+                        <button type="button" class="unavailable" disabled>Unavailable</button>
                     </td>
                 </tr>
             </table>
+            <div id="pop-up-sewa" style="display: none;">
+                <h2>Apakah anda setuju ingin menyewa mesin cuci ini?</h2>
+                <button id="setuju">Ya</button>
+                <button id="batal">Batalkan</button>
+            </div>
         </section>
     </div>
+
+    <script>
+        const tombolStatus = document.querySelectorAll(".available");
+        const popUp = document.getElementById("pop-up-sewa");
+
+        const tombolSetuju = document.getElementById("setuju");
+        const tombolBatal = document.getElementById("batal");
+
+        let selectedButton = null;
+
+        tombolStatus.forEach(button => {
+            button.addEventListener('click', () => {
+                popUp.style.display = 'block';
+                selectedButton = button;
+            });
+        });
+
+        tombolSetuju.addEventListener('click', () => {
+            if (selectedButton) {
+                selectedButton.textContent = "Unavailable";
+                selectedButton.classList.remove("available");
+                selectedButton.classList.add("unavailable");
+                selectedButton.disabled = true;
+                selectedButton = null;
+            }
+            popUp.style.display = 'none';
+        });
+
+        tombolBatal.addEventListener('click', () => {
+            popUp.style.display = 'none';
+            selectedButton = null;
+        });
+    </script>
 </body>
 
 </html>
