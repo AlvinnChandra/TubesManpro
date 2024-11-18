@@ -1,4 +1,4 @@
-#filterTgl {
+#form-tambah-pegawai {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -15,24 +15,28 @@
     gap: 10px;
 }
 
-#filterTgl h3 {
+#form-tambah-pegawai h3 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-#filterTgl form {
+#form-tambah-pegawai form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-#filterTgl label {
+#form-tambah-pegawai label {
     font-weight: bold;
 }
 
+#form-tambah-pegawai input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
 
-
-#filterTgl button {
+#form-tambah-pegawai button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -43,14 +47,32 @@
     margin-right: 10px;
 }
 
-#filterTgl button:hover {
+#form-tambah-pegawai button:hover {
     background-color: #0056b3;
 }
 
-#filterTgl #cancel-button {
+#form-tambah-pegawai #cancel-button {
     background-color: #dc3545;
 }
 
-#filterTgl #cancel-button:hover {
+#form-tambah-pegawai #cancel-button:hover {
     background-color: #c82333;
+}
+
+.masukan {
+    display: grid;
+    grid-template-columns: 150px 350px;
+    justify-content: center;   
+    row-gap: 5px;  
+    align-items: center;
+}
+
+div :only-of-type label {
+    grid-column: 1;
+    margin-left: 75px;
+}
+
+div :only-of-type input {
+    grid-column: 2;
+    margin-right: 75px;
 }
