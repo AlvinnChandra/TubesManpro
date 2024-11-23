@@ -39,4 +39,35 @@ public class LoginController {
         }
         return "login";
     }
+
+    @GetMapping("/admin")
+    public String adminPage() {
+        return "UI-UX Admin/Admin";
+    }
+
+    @GetMapping("/UI-UX Admin/dataKelurahan")
+    public String dataKelurahanPage() {
+        return "UI-UX Admin/dataKelurahan";
+    }
+
+    @GetMapping("/UI-UX Admin/dataPelanggan")
+    public String dataPelangganPage() {
+        return "UI-UX Admin/dataPelanggan";
+    }
+
+    @GetMapping("/UI-UX Admin/dataMesin")
+    public String dataMesinPage() {
+        return "UI-UX Admin/dataMesin";
+    }
+
+    @GetMapping("/UI-UX Admin/dataTransaksi")
+    public String dataTransaksiPage() {
+        return "UI-UX Admin/dataTransaksi";
+    }
+
+    @GetMapping("/pelanggan")
+    public String pelangganPage() {
+        return "UI-UX Pelanggan/PageDaftarMesin";
+    }
+
 }

@@ -68,3 +68,26 @@ body {
 .login-btn:hover {
     background-color: #0056b3;
 }
+
+.show-password-btn {
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #007bff;
+    cursor: pointer;
+    margin-top: 5px;
+    padding: 0;
+}
+
+.show-password-btn:hover {
+    text-decoration: underline;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}

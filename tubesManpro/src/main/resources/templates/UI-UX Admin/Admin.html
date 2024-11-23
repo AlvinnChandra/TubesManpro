@@ -15,17 +15,16 @@
         <h2>Admin Dashboard</h2>
         <nav>
             <ul>
-                <li><a href="Admin.html">Data Pegawai</a></li>
-                <li><a href="dataKelurahan.html">Data Kelurahan/Kecamatan</a></li>
-                <li><a href="dataPelanggan.html">Data Pelanggan</a></li>
-                <li><a href="dataMesin.html">Data Mesin Cuci & Tarif</a></li>
-                <li><a href="dataTransaksi.html">Data Transaksi</a></li>
+                <li><a th:href="@{/admin}">Data Pegawai</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan/Kecamatan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
                 <br><br><br><br><br><br><br><br>
-                <li id="logout"><a href="Login.html">Log Out</a></li>
+                <li id="logout"><a th:href="@{/login}">Log Out</a></li>
             </ul>
         </nav>
     </div>
-
     <div class="content">
         <header>
             <h1>Selamat Datang, Admin!</h1>
