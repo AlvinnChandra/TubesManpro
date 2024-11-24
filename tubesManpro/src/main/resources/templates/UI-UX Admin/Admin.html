@@ -72,37 +72,65 @@
         });
 
         function loadPegawai() {
-            // Mengambil data pegawai dari API
-            fetch('/api/pegawai/all')
-                .then(response => response.json())  // Mengonversi response ke format JSON
-                .then(pegawaiList => {
-                    // Mendapatkan elemen tabel
-                    const table = document.querySelector('table');
+        fetch('/api/pegawai/all')
+            .then(response => response.json())
+            .then(pegawaiList => {
+                const table = document.querySelector('table');
 
-                    // Menyusun baris tabel dari data pegawai
-                    pegawaiList.forEach(pegawai => {
-                        // Membuat elemen baris baru
-                        const row = document.createElement('tr');
+                // Hapus baris tabel kecuali header
+                table.querySelectorAll('tr:not(:first-child)').forEach(row => row.remove());
 
-                        // Membuat dan menambahkan kolom data ke baris
-                        row.innerHTML = `
+                pegawaiList.forEach(pegawai => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                         <td>${pegawai.id}</td>
                         <td>${pegawai.nama}</td>
                         <td>${pegawai.posisi}</td>
                     `;
-
-                        // Menambahkan baris ke tabel
-                        table.appendChild(row);
-                    });
-                })
-                .catch(error => {
-                    // Menangani error jika ada masalah saat mengambil data
-                    console.error('Gagal memuat data pegawai:', error);
+                    table.appendChild(row);
                 });
+            })
+            .catch(error => {
+                console.error('Gagal memuat data pegawai:', error);
+            });
         }
 
-        // Memanggil fungsi saat halaman dimuat
-        window.onload = loadPegawai;
+        document.getElementById('form-pegawai').addEventListener('submit', function (event) {
+        event.preventDefault(); // Mencegah reload halaman
+
+        // Ambil data dari formulir
+        const nama = document.getElementById('nama').value;
+        const posisi = document.getElementById('posisi').value;
+
+        // Kirim data ke API
+        fetch('/api/pegawai/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                nama: nama,
+                posisi: posisi
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Menampilkan pesan sukses
+                console.log(data.message);
+
+                // Bersihkan formulir
+                document.getElementById('form-pegawai').reset();
+                formTambahPegawai.style.display = 'none';
+                tambahPegawaiButton.style.display = 'block';
+
+                // Muat ulang data tabel
+                loadPegawai();
+            })
+            .catch(error => {
+                console.error('Gagal menambahkan pegawai:', error);
+            });
+    });
+
     </script>
 </body>
 
