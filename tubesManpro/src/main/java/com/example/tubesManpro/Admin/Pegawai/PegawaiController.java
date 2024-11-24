@@ -30,4 +30,32 @@ public class PegawaiController {
     public List<PegawaiData> getAllPegawai() {
         return pegawaiRepository.findAll();
     }
+
+    @GetMapping("/{id}")
+    public PegawaiData getPegawaiById(@PathVariable int id) {
+        return pegawaiRepository.findById(id);
+    }
+
+    @PutMapping("/{id}")
+    public Map<String, String> updatePegawai(@PathVariable int id, @RequestParam String nama,
+            @RequestParam String posisi) {
+        PegawaiData pegawai = new PegawaiData();
+        pegawai.setId(id);
+        pegawai.setNama(nama);
+        pegawai.setPosisi(posisi);
+        pegawaiRepository.update(pegawai);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Pegawai berhasil diperbarui");
+        return response;
+    }
+
+    @DeleteMapping("/{id}")
+    public Map<String, String> deletePegawai(@PathVariable int id) {
+        pegawaiRepository.delete(id);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Pegawai berhasil dihapus");
+        return response;
+    }
 }
