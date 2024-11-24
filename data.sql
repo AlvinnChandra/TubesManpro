@@ -7,3 +7,10 @@ CREATE TABLE users (
 
 INSERT INTO users (username, password, role) VALUES ('admin', 'admin123', 'admin');
 INSERT INTO users (username, password, role) VALUES ('pemilik', 'pemilik123', 'pemilik');
+
+
+CREATE TABLE pegawai (
+    id SERIAL PRIMARY KEY, 
+    nama VARCHAR(100) NOT NULL,
+    posisi VARCHAR(100) NOT NULL
+);

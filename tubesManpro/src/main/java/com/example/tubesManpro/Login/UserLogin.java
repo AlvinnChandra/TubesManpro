@@ -1,4 +1,4 @@
-package com.example.tubesManpro;
+package com.example.tubesManpro.Login;
 
 import lombok.Data;
 

@@ -35,10 +35,8 @@
             <button id="tambah-pegawai-button" type="button">Tambah Pegawai</button>
             <div id="form-tambah-pegawai" style="display: none;">
                 <h3>Form Tambah Pegawai</h3>
-                <form id="form-pegawai">
+                <form id="form-pegawai" method="POST" action="/api/pegawai/add">
                     <div class="masukan">
-                        <label for="id">ID</label>
-                        <input type="text" id="id" name="id" required>
                         <label for="nama">Nama</label>
                         <input type="text" id="nama" name="nama" required>
                         <label for="posisi">Posisi</label>
@@ -53,41 +51,7 @@
                     <th>ID</th>
                     <th>Nama</th>
                     <th>Posisi</th>
-                    <th>Aksi</th>
                 </tr>
-
-                <tr>
-                    <td>1</td>
-                    <td>Alvin Chandra</td>
-                    <td>Manager</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>2</td>
-                    <td>Juan Farrel</td>
-                    <td>Staff</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>3</td>
-                    <td>ZefanDion</td>
-                    <td>Staff</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
-                </tr>
-                <!-- <tbody id="pegawai-table">
-                    <Data akan diisi di sini>
-                </tbody> -->
             </table>
         </section>
     </div>
@@ -106,6 +70,39 @@
             formTambahPegawai.style.display = 'none';
             tambahPegawaiButton.style.display = 'block';
         });
+
+        function loadPegawai() {
+            // Mengambil data pegawai dari API
+            fetch('/api/pegawai/all')
+                .then(response => response.json())  // Mengonversi response ke format JSON
+                .then(pegawaiList => {
+                    // Mendapatkan elemen tabel
+                    const table = document.querySelector('table');
+
+                    // Menyusun baris tabel dari data pegawai
+                    pegawaiList.forEach(pegawai => {
+                        // Membuat elemen baris baru
+                        const row = document.createElement('tr');
+
+                        // Membuat dan menambahkan kolom data ke baris
+                        row.innerHTML = `
+                        <td>${pegawai.id}</td>
+                        <td>${pegawai.nama}</td>
+                        <td>${pegawai.posisi}</td>
+                    `;
+
+                        // Menambahkan baris ke tabel
+                        table.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    // Menangani error jika ada masalah saat mengambil data
+                    console.error('Gagal memuat data pegawai:', error);
+                });
+        }
+
+        // Memanggil fungsi saat halaman dimuat
+        window.onload = loadPegawai;
     </script>
 </body>
 
