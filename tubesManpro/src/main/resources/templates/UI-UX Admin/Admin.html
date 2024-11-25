@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newci Wash Master</title>
+    <link rel="stylesheet" href="/styleAdmin.css">
+    <link rel="stylesheet" href="/Pegawai.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a th:href="@{/admin}">Data Pegawai</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
+                <br><br><br><br><br><br><br><br><br><br><br>
+                <li id="logout"><a th:href="@{/login}">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="content">
+        <header>
+            <h1>Selamat Datang, Admin!</h1>
+        </header>
+
+        <section id="data-pegawai">
+            <h2>Data Pegawai</h2>
+            <button id="tambah-pegawai-button" type="button">Tambah Pegawai</button>
+            <div id="form-tambah-pegawai" style="display: none;">
+                <h3>Form Tambah Pegawai</h3>
+                <form id="form-pegawai" method="POST" action="/api/pegawai/add">
+                    <div class="masukan">
+                        <label for="nama">Nama</label>
+                        <input type="text" id="nama" name="nama" required>
+                        <label for="posisi">Posisi</label>
+                        <input type="text" id="posisi" name="posisi" required>
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-button">Batal</button>
+                </form>
+            </div>
+            <div id="form-update-pegawai" style="display: none;">
+                <h3>Form Update Pegawai</h3>
+                <form id="update-pegawai" method="PUT">
+                    <div class="masukan">
+                        <label for="nama-update">Nama</label>
+                        <input type="text" id="nama-update" name="nama" required>
+                        <label for="posisi-update">Posisi</label>
+                        <input type="text" id="posisi-update" name="posisi" required>
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-update-button">Batal</button>
+                </form>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama</th>
+                        <th>Posisi</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="pegawai-table-body">
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        // Kode JavaScript tetap menggunakan logic asli
+        const tambahPegawaiButton = document.getElementById('tambah-pegawai-button');
+        const formTambahPegawai = document.getElementById('form-tambah-pegawai');
+        const cancelButton = document.getElementById('cancel-button');
+        const formUpdatePegawai = document.getElementById('form-update-pegawai');
+        const cancelUpdateButton = document.getElementById('cancel-update-button');
+        const pegawaiTableBody = document.getElementById('pegawai-table-body');
+
+        tambahPegawaiButton.addEventListener('click', () => {
+            formTambahPegawai.style.display = 'block';
+            tambahPegawaiButton.style.display = 'none';
+        });
+
+        cancelButton.addEventListener('click', () => {
+            formTambahPegawai.style.display = 'none';
+            tambahPegawaiButton.style.display = 'block';
+        });
+
+        cancelUpdateButton.addEventListener('click', () => {
+            formUpdatePegawai.style.display = 'none';
+        });
+
+        function loadPegawai() {
+            fetch('/api/pegawai/all')
+                .then(response => response.json())
+                .then(pegawaiList => {
+                    pegawaiList.sort((a, b) => a.id - b.id); // Sorting berdasarkan ID
+
+                    pegawaiTableBody.innerHTML = ''; // Bersihkan tabel sebelumnya
+
+                    pegawaiList.forEach(pegawai => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${pegawai.id}</td>
+                            <td>${pegawai.nama}</td>
+                            <td>${pegawai.posisi}</td>
+                            <td>
+                                <button class="update-button" data-id="${pegawai.id}">Update</button>
+                                <button class="delete-button" data-id="${pegawai.id}">Delete</button>
+                            </td>
+                        `;
+                        pegawaiTableBody.appendChild(row);
+                    });
+
+                    // Update dan Delete button event listeners
+                    document.querySelectorAll('.update-button').forEach(button => {
+                        button.addEventListener('click', () => handleUpdate(button.dataset.id));
+                    });
+
+                    document.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', () => handleDelete(button.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Gagal memuat data pegawai:', error));
+        }
+
+        function handleUpdate(id) {
+            fetch(`/api/pegawai/${id}`)
+                .then(response => response.json())
+                .then(pegawai => {
+                    document.getElementById('nama-update').value = pegawai.nama;
+                    document.getElementById('posisi-update').value = pegawai.posisi;
+                    formUpdatePegawai.style.display = 'block';
+                    formUpdatePegawai.dataset.id = id;
+                })
+                .catch(error => console.error('Gagal mengambil data pegawai:', error));
+        }
+
+        function handleDelete(id) {
+            if (confirm(`Apakah Anda yakin ingin menghapus pegawai dengan ID ${id}?`)) {
+                fetch(`/api/pegawai/${id}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data.message);
+                        loadPegawai();
+                    })
+                    .catch(error => console.error('Gagal menghapus pegawai:', error));
+            }
+        }
+
+        document.getElementById('form-pegawai').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const nama = document.getElementById('nama').value;
+            const posisi = document.getElementById('posisi').value;
+
+            fetch('/api/pegawai/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ nama, posisi })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    this.reset();
+                    formTambahPegawai.style.display = 'none';
+                    tambahPegawaiButton.style.display = 'block';
+                    loadPegawai();
+                })
+                .catch(error => console.error('Gagal menambahkan pegawai:', error));
+        });
+
+        document.getElementById('form-update-pegawai').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const id = this.dataset.id;
+            const nama = document.getElementById('nama-update').value;
+            const posisi = document.getElementById('posisi-update').value;
+
+            fetch(`/api/pegawai/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ nama, posisi })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data.message);
+                    formUpdatePegawai.style.display = 'none';
+                    loadPegawai();
+                })
+                .catch(error => console.error('Gagal memperbarui pegawai:', error));
+        });
+
+        loadPegawai();
+    </script>
+</body>
+
+</html>
