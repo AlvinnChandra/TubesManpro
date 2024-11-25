@@ -20,9 +20,15 @@ public class jdbcMesinRepository {
         return jdbcTemplate.query(sql, this::mapRowToMesin);
     }
 
+    // Mendapatkan data mesin berdasarkan ID
+    public MesinData findById(int id) {
+        String sql = "SELECT id, merek, kapasitas, tarif FROM mesin WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, this::mapRowToMesin, id);
+    }
+
     // Menambahkan mesin baru
     public void addMesin(MesinData mesin) {
-        String sql = "INSERT INTO mesin (merek, kapasitas, tarif) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO mesin (merek, kapasitas, tarif) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, mesin.getMerek(), mesin.getKapasitas(), mesin.getTarif());
     }
 
@@ -44,7 +50,7 @@ public class jdbcMesinRepository {
         return new MesinData(
                 resultSet.getInt("id"),
                 resultSet.getString("merek"),
-                resultSet.getString("kapasitas"),
+                resultSet.getInt("kapasitas"),
                 resultSet.getInt("tarif"));
     }
 }

@@ -1,15 +1,20 @@
 package com.example.tubesManpro.Admin.Mesin;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class MesinData {
     private int id;
     private String merek;
-    private String kapasitas;
+    private int kapasitas;
     private int tarif;
+
+    public MesinData(int id, String merek, int kapasitas, int tarif){
+        this.id = id;
+        this.merek = merek;
+        this.kapasitas = kapasitas;
+        this.tarif = tarif;
+    }
 }
