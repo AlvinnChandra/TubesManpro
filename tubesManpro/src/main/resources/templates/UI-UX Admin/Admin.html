@@ -75,6 +75,7 @@
     </div>
 
     <script>
+        // Kode JavaScript tetap menggunakan logic asli
         const tambahPegawaiButton = document.getElementById('tambah-pegawai-button');
         const formTambahPegawai = document.getElementById('form-tambah-pegawai');
         const cancelButton = document.getElementById('cancel-button');
@@ -100,45 +101,34 @@
             fetch('/api/pegawai/all')
                 .then(response => response.json())
                 .then(pegawaiList => {
-                    // Sort pegawaiList by ID before rendering
-                    pegawaiList.sort((a, b) => a.id - b.id);  // Pastikan urutan berdasarkan ID
+                    pegawaiList.sort((a, b) => a.id - b.id); // Sorting berdasarkan ID
 
-                    pegawaiTableBody.innerHTML = ''; // Clear table body
+                    pegawaiTableBody.innerHTML = ''; // Bersihkan tabel sebelumnya
 
                     pegawaiList.forEach(pegawai => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                    <td>${pegawai.id}</td>
-                    <td>${pegawai.nama}</td>
-                    <td>${pegawai.posisi}</td>
-                    <td>
-                        <button class="update-button" data-id="${pegawai.id}">Update</button>
-                        <button class="delete-button" data-id="${pegawai.id}">Delete</button>
-                    </td>
-                `;
+                            <td>${pegawai.id}</td>
+                            <td>${pegawai.nama}</td>
+                            <td>${pegawai.posisi}</td>
+                            <td>
+                                <button class="update-button" data-id="${pegawai.id}">Update</button>
+                                <button class="delete-button" data-id="${pegawai.id}">Delete</button>
+                            </td>
+                        `;
                         pegawaiTableBody.appendChild(row);
                     });
 
-                    // Event listeners for update and delete buttons
-                    const updateButtons = document.querySelectorAll('.update-button');
-                    updateButtons.forEach(button => {
-                        button.addEventListener('click', () => {
-                            const id = button.dataset.id;
-                            handleUpdate(id);
-                        });
+                    // Update dan Delete button event listeners
+                    document.querySelectorAll('.update-button').forEach(button => {
+                        button.addEventListener('click', () => handleUpdate(button.dataset.id));
                     });
 
-                    const deleteButtons = document.querySelectorAll('.delete-button');
-                    deleteButtons.forEach(button => {
-                        button.addEventListener('click', () => {
-                            const id = button.dataset.id;
-                            handleDelete(id);
-                        });
+                    document.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', () => handleDelete(button.dataset.id));
                     });
                 })
-                .catch(error => {
-                    console.error('Gagal memuat data pegawai:', error);
-                });
+                .catch(error => console.error('Gagal memuat data pegawai:', error));
         }
 
         function handleUpdate(id) {
@@ -150,24 +140,18 @@
                     formUpdatePegawai.style.display = 'block';
                     formUpdatePegawai.dataset.id = id;
                 })
-                .catch(error => {
-                    console.error('Gagal mengambil data pegawai:', error);
-                });
+                .catch(error => console.error('Gagal mengambil data pegawai:', error));
         }
 
         function handleDelete(id) {
             if (confirm(`Apakah Anda yakin ingin menghapus pegawai dengan ID ${id}?`)) {
-                fetch(`/api/pegawai/${id}`, {
-                    method: 'DELETE'
-                })
+                fetch(`/api/pegawai/${id}`, { method: 'DELETE' })
                     .then(response => response.json())
                     .then(data => {
                         console.log(data.message);
                         loadPegawai();
                     })
-                    .catch(error => {
-                        console.error('Gagal menghapus pegawai:', error);
-                    });
+                    .catch(error => console.error('Gagal menghapus pegawai:', error));
             }
         }
 
@@ -179,25 +163,18 @@
 
             fetch('/api/pegawai/add', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    nama: nama,
-                    posisi: posisi
-                })
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ nama, posisi })
             })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data.message);
-                    document.getElementById('form-pegawai').reset();
+                    this.reset();
                     formTambahPegawai.style.display = 'none';
                     tambahPegawaiButton.style.display = 'block';
                     loadPegawai();
                 })
-                .catch(error => {
-                    console.error('Gagal menambahkan pegawai:', error);
-                });
+                .catch(error => console.error('Gagal menambahkan pegawai:', error));
         });
 
         document.getElementById('form-update-pegawai').addEventListener('submit', function (event) {
@@ -209,13 +186,8 @@
 
             fetch(`/api/pegawai/${id}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    nama: nama,
-                    posisi: posisi
-                })
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({ nama, posisi })
             })
                 .then(response => response.json())
                 .then(data => {
@@ -223,9 +195,7 @@
                     formUpdatePegawai.style.display = 'none';
                     loadPegawai();
                 })
-                .catch(error => {
-                    console.error('Gagal memperbarui pegawai:', error);
-                });
+                .catch(error => console.error('Gagal memperbarui pegawai:', error));
         });
 
         loadPegawai();

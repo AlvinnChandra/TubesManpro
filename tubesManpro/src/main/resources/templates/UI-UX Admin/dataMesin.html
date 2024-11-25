@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newci Wash Master</title>
+    <title>Newci Wash Master - Data Mesin</title>
     <link rel="stylesheet" href="/styleAdmin.css">
     <link rel="stylesheet" href="/DataMesin.css">
     <script defer src="script.js"></script>
@@ -20,7 +20,7 @@
                 <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
-                <br><br><br><br><br><br><br><br>
+                <br><br><br><br><br><br><br>
                 <li id="logout"><a th:href="@{/login}">Log Out</a></li>
             </ul>
         </nav>
@@ -31,60 +31,35 @@
             <h1>Selamat Datang, Admin!</h1>
         </header>
 
-
         <section id="data-mesin">
-            <h2>Data Mesin Cuci & Satuan Tarif</h2>
+            <h2>Data Mesin Cuci & Tarif</h2>
             <button id="tambah-mesin-button" type="button">Tambah Mesin</button>
             <div id="form-tambah-mesin" style="display: none;">
                 <h3>Form Tambah Mesin</h3>
-                <form id="form-mesin">
-                    <div class="masukan">
-                        <label for="id">ID</label>
-                        <input type="text" id="id" name="id" required>
-                        <label for="merek">Merek</label>
-                        <input type="text" id="merek" name="merek" required>
-                        <label for="kapasitas">Kapasitas (dalam kg)</label>
-                        <input type="number" id="kapasitas" name="kapasitas" required min="0">
-                        <label for="tarif">Tarif per 15 menit</label>
-                        <input type="number" id="tarif" name="tarif" required min="0">
-                    </div>
+                <form id="form-mesin" method="POST" action="/api/mesin/add">
+                    <label for="merek">Merek</label>
+                    <input type="text" id="merek" name="merek" required>
+                    <label for="kapasitas">Kapasitas</label>
+                    <input type="number" id="kapasitas" name="kapasitas" required>
+                    <label for="tarif">Tarif</label>
+                    <input type="number" id="tarif" name="tarif" required>
                     <button type="submit">Simpan</button>
                     <button type="button" id="cancel-mesin-button">Batal</button>
                 </form>
             </div>
+
             <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Merek</th>
-                    <th>Kapasitas (dalam kg)</th>
-                    <th>Tarif per 15 menit</th>
-                    <th>Aksi</th>
-                </tr>
-
-                <tr>
-                    <td>1</td>
-                    <td>LG</td>
-                    <td>20</td>
-                    <td>15.000</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>1</td>
-                    <td>Panasonic</td>
-                    <td>10</td>
-                    <td>10.000</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
-                </tr>
-                <!-- <tbody id="mesin-table">
-                    <Data akan diisi di sini>
-                </tbody> -->
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Merek</th>
+                        <th>Kapasitas</th>
+                        <th>Tarif</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="mesin-table-body">
+                </tbody>
             </table>
         </section>
     </div>
@@ -93,18 +68,98 @@
         const tambahMesinButton = document.getElementById('tambah-mesin-button');
         const formTambahMesin = document.getElementById('form-tambah-mesin');
         const cancelMesinButton = document.getElementById('cancel-mesin-button');
+        const mesinTableBody = document.getElementById('mesin-table-body');
 
         tambahMesinButton.addEventListener('click', () => {
             formTambahMesin.style.display = 'block';
             tambahMesinButton.style.display = 'none';
-            overlay.classList.add('show');
         });
 
         cancelMesinButton.addEventListener('click', () => {
             formTambahMesin.style.display = 'none';
             tambahMesinButton.style.display = 'block';
-            overlay.classList.remove('show');
         });
+
+        function loadMesin() {
+            fetch('/api/mesin/all')
+                .then(response => response.json())
+                .then(mesinList => {
+                    mesinTableBody.innerHTML = ''; // Clear table body
+                    mesinList.forEach(mesin => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${mesin.id}</td>
+                            <td>${mesin.merek}</td>
+                            <td>${mesin.kapasitas}</td>
+                            <td>${mesin.tarif}</td>
+                            <td>
+                                <button class="update-button" data-id="${mesin.id}">Update</button>
+                                <button class="delete-button" data-id="${mesin.id}">Delete</button>
+                            </td>
+                        `;
+                        mesinTableBody.appendChild(row);
+                    });
+
+                    // Tambah event listener untuk update dan delete
+                    const updateButtons = document.querySelectorAll('.update-button');
+                    updateButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            const id = button.dataset.id;
+                            handleUpdateMesin(id);
+                        });
+                    });
+
+                    const deleteButtons = document.querySelectorAll('.delete-button');
+                    deleteButtons.forEach(button => {
+                        button.addEventListener('click', () => {
+                            const id = button.dataset.id;
+                            handleDeleteMesin(id);
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Gagal memuat data mesin:', error);
+                });
+        }
+
+        function handleUpdateMesin(id) {
+            console.log(`Fitur update untuk ID ${id} belum diimplementasikan.`);
+        }
+
+        function handleDeleteMesin(id) {
+            if (confirm(`Apakah Anda yakin ingin menghapus mesin dengan ID ${id}?`)) {
+                fetch(`/api/mesin/${id}`, {
+                    method: 'DELETE',
+                })
+                    .then(() => {
+                        loadMesin();
+                    })
+                    .catch(error => {
+                        console.error('Gagal menghapus mesin:', error);
+                    });
+            }
+        }
+
+        document.getElementById('form-mesin').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/api/mesin/add', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(() => {
+                    this.reset();
+                    formTambahMesin.style.display = 'none';
+                    tambahMesinButton.style.display = 'block';
+                    loadMesin();
+                })
+                .catch(error => {
+                    console.error('Gagal menambahkan mesin:', error);
+                });
+        });
+
+        loadMesin();
     </script>
+</body>
 
 </html>
