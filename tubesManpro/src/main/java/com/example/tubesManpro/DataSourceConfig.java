@@ -23,8 +23,8 @@ public class DataSourceConfig {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
+        dataSource.setUsername("postgres");
+        dataSource.setPassword("agpd2107");
         return dataSource;
     }
 }
