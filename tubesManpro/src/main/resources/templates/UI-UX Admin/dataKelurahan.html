@@ -4,10 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newci Wash Master</title>
+    <title>Data Kelurahan/Kecamatan</title>
     <link rel="stylesheet" href="/styleAdmin.css">
     <link rel="stylesheet" href="/Kelurahan.css">
-    <script defer src="script.js"></script>
 </head>
 
 <body>
@@ -20,7 +19,6 @@
                 <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
-                <br><br><br><br><br><br><br><br>
                 <li id="logout"><a th:href="@{/login}">Log Out</a></li>
             </ul>
         </nav>
@@ -28,82 +26,47 @@
 
     <div class="content">
         <header>
-            <h1>Selamat Datang, Admin!</h1>
+            <h1>Data Kelurahan/Kecamatan</h1>
         </header>
 
         <section id="data-lokasi">
-            <h2>Data Kelurahan/Kecamatan</h2>
-            <button id="tambah-lokasi-button" type="button">Tambah Lokasi</button>
-            <div id="form-tambah-lokasi" style="display: none;">
-                <h3>Form Tambah Lokasi</h3>
-                <form id="form-lokasi">
-                    <div class="masukan">
-                        <label for="id">ID</label>
-                        <input type="text" id="id" name="id" required>
-                        <label for="kecamatan">Kecamatan</label>
-                        <input type="text" id="kecamatan" name="kecamatan" required>
-                        <label for="kelurahan">Kelurahan</label>
-                        <input type="text" id="kelurahan" name="kelurahan" required>
-                    </div>
-                    <button type="submit">Simpan</button>
-                    <button type="button" id="cancel-lokasi-button">Batal</button>
-                </form>
-            </div>
+            <h2>Data Kecamatan</h2>
             <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Kecamatan</th>
-                    <th>Kelurahan</th>
-                    <th>Aksi</th>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kecamatan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Iterasi data Kecamatan -->
+                    <tr th:each="kecamatan : ${kecamatanList}">
+                        <td th:text="${kecamatan.id}"></td>
+                        <td th:text="${kecamatan.namaKecamatan}"></td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <tr>
-                    <td>1</td>
-                    <td>Margaasih</td>
-                    <td>Rahayu</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>2</td>
-                    <td>Cidadap</td>
-                    <td>Hegarmanah</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
-                </tr>
-                <!-- <tbody id="lokasi-table">
-                    <Data akan diisi di sini>
-                </tbody> -->
+            <h2>Data Kelurahan</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kelurahan</th>
+                        <th>Kecamatan ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Iterasi data Kelurahan -->
+                    <tr th:each="kelurahan : ${kelurahanList}">
+                        <td th:text="${kelurahan.id}"></td>
+                        <td th:text="${kelurahan.namaKelurahan}"></td>
+                        <td th:text="${kelurahan.kecamatanId}"></td>
+                    </tr>
+                </tbody>
             </table>
         </section>
-
-
     </div>
-
-    <script>
-        const tambahLokasiButton = document.getElementById('tambah-lokasi-button');
-        const formTambahLokasi = document.getElementById('form-tambah-lokasi');
-        const cancelLokasiButton = document.getElementById('cancel-lokasi-button');
-        const overlay = document.querySelector('.overlay');
-
-        tambahLokasiButton.addEventListener('click', () => {
-            formTambahLokasi.style.display = 'block';
-            tambahLokasiButton.style.display = 'none';
-            overlay.classList.add('show');
-        });
-
-        cancelLokasiButton.addEventListener('click', () => {
-            formTambahLokasi.style.display = 'none';
-            tambahLokasiButton.style.display = 'block';
-            overlay.classList.remove('show');
-        });
-    </script>
-
 </body>
 
 </html>

@@ -20,7 +20,7 @@
                 <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
-                <br><br><br><br><br><br><br>
+                <br><br><br><br><br><br><br><br><br><br><br>
                 <li id="logout"><a th:href="@{/login}">Log Out</a></li>
             </ul>
         </nav>
@@ -45,6 +45,21 @@
                     <input type="number" id="tarif" name="tarif" required>
                     <button type="submit">Simpan</button>
                     <button type="button" id="cancel-mesin-button">Batal</button>
+                </form>
+            </div>
+
+            <div id="form-update-mesin" style="display: none;">
+                <h3>Form Update Mesin</h3>
+                <form id="form-update" method="POST">
+                    <input type="hidden" id="update-id" name="id">
+                    <label for="update-merek">Merek</label>
+                    <input type="text" id="update-merek" name="merek" required>
+                    <label for="update-kapasitas">Kapasitas</label>
+                    <input type="number" id="update-kapasitas" name="kapasitas" required>
+                    <label for="update-tarif">Tarif</label>
+                    <input type="number" id="update-tarif" name="tarif" required>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-update-button">Batal</button>
                 </form>
             </div>
 
@@ -84,6 +99,8 @@
             fetch('/api/mesin/all')
                 .then(response => response.json())
                 .then(mesinList => {
+                    mesinList.sort((a, b) => a.id - b.id); // Sorting berdasarkan ID
+
                     mesinTableBody.innerHTML = ''; // Clear table body
                     mesinList.forEach(mesin => {
                         const row = document.createElement('tr');
@@ -123,7 +140,20 @@
         }
 
         function handleUpdateMesin(id) {
-            console.log(`Fitur update untuk ID ${id} belum diimplementasikan.`);
+            // Ambil data mesin yang akan diupdate
+            fetch(`/api/mesin/${id}`)
+                .then(response => response.json())
+                .then(mesin => {
+                    // Isi data mesin ke dalam form update
+                    document.getElementById('update-id').value = mesin.id;
+                    document.getElementById('update-merek').value = mesin.merek;
+                    document.getElementById('update-kapasitas').value = mesin.kapasitas;
+                    document.getElementById('update-tarif').value = mesin.tarif;
+
+                    // Tampilkan form update
+                    document.getElementById('form-update-mesin').style.display = 'block';
+                })
+                .catch(error => console.error('Gagal memuat data mesin:', error));
         }
 
         function handleDeleteMesin(id) {
@@ -156,6 +186,28 @@
                 .catch(error => {
                     console.error('Gagal menambahkan mesin:', error);
                 });
+        });
+
+        // Handle submit form update
+        document.getElementById('form-update').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const id = formData.get('id');
+
+            fetch(`/api/mesin/${id}`, {
+                method: 'PUT',
+                body: formData,
+            })
+                .then(() => {
+                    document.getElementById('form-update-mesin').style.display = 'none';
+                    loadMesin();
+                })
+                .catch(error => console.error('Gagal memperbarui mesin:', error));
+        });
+
+        // Handle cancel update
+        document.getElementById('cancel-update-button').addEventListener('click', () => {
+            document.getElementById('form-update-mesin').style.display = 'none';
         });
 
         loadMesin();

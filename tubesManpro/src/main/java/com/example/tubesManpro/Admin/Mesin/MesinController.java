@@ -19,10 +19,15 @@ public class MesinController {
         return mesinRepository.findAll();
     }
 
+    @GetMapping("/{id}")
+    public MesinData getMesinById(@PathVariable int id) {
+        return mesinRepository.findById(id);
+    }
+
     // Endpoint untuk menambahkan data mesin baru
     @PostMapping("/add")
     public Map<String, String> addMesin(@RequestParam String merek,
-            @RequestParam String kapasitas,
+            @RequestParam int kapasitas,
             @RequestParam int tarif) {
         MesinData mesin = new MesinData();
         mesin.setMerek(merek);
@@ -39,8 +44,9 @@ public class MesinController {
     @PutMapping("/{id}")
     public Map<String, String> updateMesin(@PathVariable int id,
             @RequestParam String merek,
-            @RequestParam String kapasitas,
+            @RequestParam int kapasitas,
             @RequestParam int tarif) {
+        
         MesinData mesin = new MesinData();
         mesin.setId(id);
         mesin.setMerek(merek);
