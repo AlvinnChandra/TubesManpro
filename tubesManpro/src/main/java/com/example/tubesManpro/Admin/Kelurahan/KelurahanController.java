@@ -33,9 +33,10 @@ public class KelurahanController {
     @GetMapping("/all")
     public Map<String, Object> getAllKelurahanWithPagination(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "16") int size) {
-        List<KelurahanData> kelurahanList = kelurahanRepository.findAllWithPagination(page, size);
-        int totalData = kelurahanRepository.count();
+            @RequestParam(defaultValue = "16") int size,
+            @RequestParam(required = false, defaultValue = "") String search) {
+        List<KelurahanData> kelurahanList = kelurahanRepository.findAllWithPaginationAndSearch(page, size, search);
+        int totalData = kelurahanRepository.countBySearch(search);
         int totalPages = (int) Math.ceil((double) totalData / size);
 
         Map<String, Object> response = new HashMap<>();

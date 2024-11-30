@@ -28,8 +28,9 @@ public class KecamatanController {
     @GetMapping("/all")
     public Map<String, Object> getAllKecamatanWithPagination(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        List<KecamatanData> kecamatanList = kecamatanRepository.findAllWithPagination(page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, defaultValue = "") String search) {
+        List<KecamatanData> kecamatanList = kecamatanRepository.findAllWithPagination(page, size, search);
         int totalData = kecamatanRepository.count(); // Tambahkan metode count() di repository
         int totalPages = (int) Math.ceil((double) totalData / size);
 

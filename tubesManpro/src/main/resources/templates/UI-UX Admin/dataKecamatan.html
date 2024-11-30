@@ -34,7 +34,6 @@
         <section id="data-kecamatan">
             <h2>Data Kecamatan</h2>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <button id="tambah-kecamatan-button" type="button">Tambah Kecamatan</button>
                 <input type="text" id="search-input" placeholder="Cari nama kecamatan..."
                     style="padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
             </div>
@@ -70,26 +69,17 @@
     </div>
 
     <script>
-        const tambahKecamatanButton = document.getElementById('tambah-kecamatan-button');
         const formTambahKecamatan = document.getElementById('form-tambah-kecamatan');
+        const searchInput = document.getElementById('search-input');
         const cancelButton = document.getElementById('cancel-button');
         const kecamatanTableBody = document.getElementById('kecamatan-table-body');
 
-        tambahKecamatanButton.addEventListener('click', () => {
-            formTambahKecamatan.style.display = 'block';
-            tambahKecamatanButton.style.display = 'none';
-        });
-
-        cancelButton.addEventListener('click', () => {
-            formTambahKecamatan.style.display = 'none';
-            tambahKecamatanButton.style.display = 'block';
-        });
-
         let currentPage = 1;
         let totalPages = 1;
+        let searchQuery = '';
 
-        function loadKecamatan(page = 1) {
-            fetch(`/api/kecamatan/all?page=${page}&size=10`)
+        function loadKecamatan(page = 1, query = '') {
+            fetch(`/api/kecamatan/all?page=${page}&size=10&search=${query}`)
                 .then(response => response.json())
                 .then(data => {
                     const { data: kecamatanList, totalPages: total, currentPage: current } = data;
@@ -101,12 +91,12 @@
                     kecamatanList.forEach(kecamatan => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                    <td>${kecamatan.id}</td>
-                    <td>${kecamatan.namaKecamatan}</td>
-                    <td>
-                        <button class="delete-button" data-id="${kecamatan.id}">Delete</button>
-                    </td>
-                `;
+                            <td>${kecamatan.id}</td>
+                            <td>${kecamatan.namaKecamatan}</td>
+                            <td>
+                                <button class="delete-button" data-id="${kecamatan.id}">Delete</button>
+                            </td>
+                        `;
                         kecamatanTableBody.appendChild(row);
                     });
 
@@ -118,6 +108,7 @@
                 .catch(error => console.error('Gagal memuat data kecamatan:', error));
         }
 
+        // Fungsi untuk memperbarui pagination
         function updatePagination() {
             const pageNumbers = document.getElementById('page-numbers');
             const prevButton = document.getElementById('prev-button');
@@ -132,7 +123,7 @@
                 if (i === currentPage) {
                     pageButton.disabled = true;
                 }
-                pageButton.addEventListener('click', () => loadKecamatan(i));
+                pageButton.addEventListener('click', () => loadKecamatan(i, searchQuery));
                 pageNumbers.appendChild(pageButton);
             }
 
@@ -142,16 +133,23 @@
 
             prevButton.onclick = () => {
                 if (currentPage > 1) {
-                    loadKecamatan(currentPage - 1);
+                    loadKecamatan(currentPage - 1, searchQuery);
                 }
             };
 
             nextButton.onclick = () => {
                 if (currentPage < totalPages) {
-                    loadKecamatan(currentPage + 1);
+                    loadKecamatan(currentPage + 1, searchQuery);
                 }
             };
         }
+
+        // Menambahkan event listener untuk input pencarian
+        searchInput.addEventListener('input', (event) => {
+            searchQuery = event.target.value; // Simpan query pencarian
+            currentPage = 1; // Reset halaman ke 1 setiap kali pencarian berubah
+            loadKecamatan(currentPage, searchQuery); // Memuat data kecamatan sesuai pencarian
+        });
 
         // Panggil loadKecamatan untuk pertama kali
         loadKecamatan();

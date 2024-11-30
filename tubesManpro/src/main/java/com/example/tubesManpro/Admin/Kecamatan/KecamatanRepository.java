@@ -33,6 +33,18 @@ public class KecamatanRepository {
         }, pageSize, offset);
     }
 
+    // Mengambil semua data Kecamatan dengan pagination filter
+    public List<KecamatanData> findAllWithPagination(int page, int pageSize, String search) {
+        int offset = (page - 1) * pageSize;
+        String sql = "SELECT * FROM kecamatan WHERE LOWER(nama_kecamatan) LIKE LOWER(?) LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, new RowMapper<KecamatanData>() {
+            @Override
+            public KecamatanData mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new KecamatanData(rs.getInt("id"), rs.getString("nama_kecamatan"));
+            }
+        }, "%" + search.toLowerCase() + "%", pageSize, offset);  // Menggunakan LOWER() untuk pencarian case-insensitive
+    }
+
     // Mengambil data Kecamatan berdasarkan ID
     public KecamatanData findById(int id) {
         String sql = "SELECT * FROM kecamatan WHERE id = ?";
@@ -59,5 +71,10 @@ public class KecamatanRepository {
     public int count() {
         String sql = "SELECT COUNT(*) FROM kecamatan";
         return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+    public int count(String search) {
+        String sql = "SELECT COUNT(*) FROM kecamatan WHERE LOWER(nama_kecamatan) LIKE LOWER(?)";
+        return jdbcTemplate.queryForObject(sql, Integer.class, "%" + search.toLowerCase() + "%");  // Menggunakan LOWER() untuk menghitung case-insensitive
     }
 }
