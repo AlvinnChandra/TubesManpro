@@ -70,4 +70,9 @@ public class KecamatanController {
         response.put("message", "Kecamatan berhasil dihapus");
         return response;
     }
+
+    @GetMapping("/list")
+    public List<KecamatanData> getAllKecamatan() {
+        return kecamatanRepository.findAllWithPagination(1, kecamatanRepository.count());
+    }
 }

@@ -60,4 +60,14 @@ public class KelurahanRepository {
         String sql = "SELECT COUNT(*) FROM kelurahan";
         return jdbcTemplate.queryForObject(sql, Integer.class);
     }
+
+    public List<KelurahanData> findByKecamatanId(int kecamatanId) {
+        String sql = "SELECT id, nama_kelurahan FROM kelurahan WHERE kecamatan_id = ?";
+        return jdbcTemplate.query(sql, new RowMapper<KelurahanData>() {
+            @Override
+            public KelurahanData mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new KelurahanData(rs.getInt("id"), rs.getString("nama_kelurahan"));
+            }
+        }, kecamatanId);
+    }
 }

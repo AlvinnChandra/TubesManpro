@@ -48,9 +48,16 @@
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" required>
                         <label for="kecamatan">Kecamatan</label>
-                        <input type="text" id="kecamatan" name="kecamatan" required>
-                        <label for="kelurahan">Kelurahan</label>
-                        <input type="text" id="kelurahan" name="kelurahan" required>
+                        <select id="kecamatan" name="kecamatan" required>
+                            <option value="" disabled selected>Pilih Kecamatan</option>
+                        </select>
+                        <label for="kelurahan">Kelurahan:</label>
+                        <select id="kelurahan" name="kelurahan" required>
+                            <option value="" disabled selected>Pilih Kelurahan</option>
+                        </select>
+                        <div id="kelurahan-warning" style="color: red; display: none;">
+                            Kelurahan belum tersedia. Harap tambahkan data kelurahan terlebih dahulu.
+                        </div>
                     </div>
                     <button type="submit">Simpan</button>
                     <button type="button" id="cancel-pelanggan-button">Batal</button>
@@ -108,6 +115,69 @@
             formTambahPelanggan.style.display = 'none';
             tambahPelangganButton.style.display = 'block';
         });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const kecamatanDropdown = document.getElementById('kecamatan');
+
+            function loadKecamatanDropdown() {
+                fetch('/api/kecamatan/list')
+                    .then(response => response.json())
+                    .then(kecamatanList => {
+                        // Bersihkan dropdown sebelum menambahkan data
+                        kecamatanDropdown.innerHTML = '<option value="" disabled selected>Pilih Kecamatan</option>';
+                        
+                        // Tambahkan opsi untuk setiap kecamatan
+                        kecamatanList.forEach(kecamatan => {
+                            const option = document.createElement('option');
+                            option.value = kecamatan.id;
+                            option.textContent = kecamatan.namaKecamatan;
+                            kecamatanDropdown.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Gagal memuat data kecamatan:', error));
+            }
+
+            // Panggil fungsi untuk mengisi dropdown
+            loadKecamatanDropdown();
+        });
+
+        // Fungsi untuk memuat data kelurahan berdasarkan kecamatan
+        function loadKelurahan(kecamatan) {
+            fetch(`/api/kelurahan/by-kecamatan/${kecamatan}`)
+                .then(response => response.json())
+                .then(data => {
+                    const kelurahanSelect = document.getElementById('kelurahan');
+                    const kelurahanWarning = document.getElementById('kelurahan-warning');
+
+                    if (data.length === 0) {
+                        kelurahanSelect.style.display = 'none';
+                        kelurahanWarning.style.display = 'block';
+                    } else {
+                        kelurahanSelect.innerHTML = '<option value="" disabled selected>Pilih Kelurahan</option>';
+                        data.forEach(kelurahan => {
+                            const option = document.createElement('option');
+                            option.value = kelurahan.id;
+                            option.textContent = kelurahan.namaKelurahan;
+                            kelurahanSelect.appendChild(option);
+                        });
+
+                        kelurahanSelect.style.display = 'block';
+                        kelurahanWarning.style.display = 'none';
+                    }
+                })
+            .catch(error => console.error('Gagal memuat data kelurahan:', error));
+        }
+
+        // Hubungkan dropdown kecamatan dan kelurahan
+        document.getElementById('kecamatan').addEventListener('change', event => {
+            const kecamatan = event.target.value;
+            if (kecamatan) {
+                loadKelurahan(kecamatan);
+            }
+        });
+
+        // Panggil fungsi loadKecamatan saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadKecamatan);
     </script>
 </body>
 

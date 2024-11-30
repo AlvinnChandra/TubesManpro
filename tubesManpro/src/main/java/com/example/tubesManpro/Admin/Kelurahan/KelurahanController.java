@@ -75,4 +75,10 @@ public class KelurahanController {
         response.put("message", "Kelurahan berhasil dihapus");
         return response;
     }
+
+    @GetMapping("/by-kecamatan/{kecamatanId}")
+    public List<KelurahanData> getKelurahanByKecamatan(@PathVariable int kecamatanId) {
+        // Memanggil method dari repository
+        return kelurahanRepository.findByKecamatanId(kecamatanId);
+    }
 }
