@@ -16,9 +16,7 @@ public class KecamatanController {
 
     // Endpoint untuk menambahkan data Kecamatan
     @PostMapping("/add")
-    public Map<String, String> addKecamatan(@RequestParam String namaKecamatan) {
-        KecamatanData kecamatan = new KecamatanData();
-        kecamatan.setNamaKecamatan(namaKecamatan);
+    public Map<String, String> addKecamatan(@RequestBody KecamatanData kecamatan) {
         kecamatanRepository.save(kecamatan);
 
         Map<String, String> response = new HashMap<>();
@@ -50,10 +48,8 @@ public class KecamatanController {
 
     // Endpoint untuk memperbarui data Kecamatan
     @PutMapping("/{id}")
-    public Map<String, String> updateKecamatan(@PathVariable int id, @RequestParam String namaKecamatan) {
-        KecamatanData kecamatan = new KecamatanData();
-        kecamatan.setId(id);
-        kecamatan.setNamaKecamatan(namaKecamatan);
+    public Map<String, String> updateKecamatan(@PathVariable int id, @RequestBody KecamatanData kecamatan) {
+        kecamatan.setId(id); // Pastikan ID diubah dari path variable
         kecamatanRepository.update(kecamatan);
 
         Map<String, String> response = new HashMap<>();
