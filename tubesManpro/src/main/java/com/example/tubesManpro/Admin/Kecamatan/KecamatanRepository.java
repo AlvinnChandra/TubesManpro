@@ -42,7 +42,7 @@ public class KecamatanRepository {
             public KecamatanData mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new KecamatanData(rs.getInt("id"), rs.getString("nama_kecamatan"));
             }
-        }, "%" + search.toLowerCase() + "%", pageSize, offset);  // Menggunakan LOWER() untuk pencarian case-insensitive
+        }, "%" + search.toLowerCase() + "%", pageSize, offset); // Menggunakan LOWER() untuk pencarian case-insensitive
     }
 
     // Mengambil data Kecamatan berdasarkan ID
@@ -75,6 +75,8 @@ public class KecamatanRepository {
 
     public int count(String search) {
         String sql = "SELECT COUNT(*) FROM kecamatan WHERE LOWER(nama_kecamatan) LIKE LOWER(?)";
-        return jdbcTemplate.queryForObject(sql, Integer.class, "%" + search.toLowerCase() + "%");  // Menggunakan LOWER() untuk menghitung case-insensitive
+        return jdbcTemplate.queryForObject(sql, Integer.class, "%" + search.toLowerCase() + "%"); // Menggunakan LOWER()
+                                                                                                  // untuk menghitung
+                                                                                                  // case-insensitive
     }
 }
