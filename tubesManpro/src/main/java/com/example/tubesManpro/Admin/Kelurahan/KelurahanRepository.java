@@ -49,8 +49,8 @@ public class KelurahanRepository {
     @SuppressWarnings("deprecation")
     public List<KelurahanData> findAllWithPaginationAndSearch(int page, int size, String search) {
         int offset = (page - 1) * size;
-        String sql = "SELECT id, nama_kelurahan FROM kelurahan WHERE nama_kelurahan LIKE ? LIMIT ? OFFSET ?";
-        return jdbcTemplate.query(sql, new Object[]{"%" + search + "%", size, offset}, 
+        String sql = "SELECT id, nama_kelurahan FROM kelurahan WHERE LOWER(nama_kelurahan) LIKE LOWER(?) LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, new Object[] { "%" + search + "%", size, offset },
                 (rs, rowNum) -> new KelurahanData(rs.getInt("id"), rs.getString("nama_kelurahan")));
     }
 
@@ -77,7 +77,7 @@ public class KelurahanRepository {
 
     @SuppressWarnings("deprecation")
     public int countBySearch(String search) {
-        String sql = "SELECT COUNT(*) FROM kelurahan WHERE nama_kelurahan LIKE ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{"%" + search + "%"}, Integer.class);
+        String sql = "SELECT COUNT(*) FROM kelurahan WHERE LOWER(nama_kelurahan) LIKE ?";
+        return jdbcTemplate.queryForObject(sql, new Object[] { "%" + search + "%" }, Integer.class);
     }
 }
