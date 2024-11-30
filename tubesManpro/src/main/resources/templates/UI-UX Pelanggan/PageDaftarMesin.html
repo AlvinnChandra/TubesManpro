@@ -6,24 +6,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>>Newci Wash Master</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/daftar.css">
+    <title>Welcome Newci Wash Master</title>
+    <link rel="stylesheet" href="/stylePelanggan.css">
+    <link rel="stylesheet" href="/daftar.css">
     <script defer src="script.js"></script>
 </head>
 
 <body>
-    <div class="sidebar">
-        <h2>Dashboard Pelanggan</h2>
-        <nav>
-            <ul>
-                <li><a href="PagePelanggan.html">Harga Sewa</a></li>
-                <li><a href="PageDaftarMesin.html">Daftar Mesin Cuci</a></li>
-                <li><a href="Login.html">Log Out</a></li>
-            </ul>
-        </nav>
-    </div>
-
     <div class="content">
         <header>
             <h1>Selamat Datang, Pelanggan Newci!</h1>
@@ -108,7 +97,7 @@
                 const row = event.target.closest('tr');
                 const hargaText = row.cells[2].textContent;
                 hargaPer15Menit = parseInt(hargaText.replace('.', ''));
-                
+
                 formSewa.style.display = 'block';
                 selectedButton = button;
             });

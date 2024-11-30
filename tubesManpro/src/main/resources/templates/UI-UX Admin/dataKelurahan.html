@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newci Wash Master - Data Kelurahan</title>
+    <link rel="stylesheet" href="/styleAdmin.css">
+    <link rel="stylesheet" href="/Kelurahan.css">
+    <script defer src="kelurahanScript.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a href="/admin">Data Pegawai</a></li>
+                <li><a href="/UI-UX Admin/dataKecamatan">Data Kecamatan</a></li>
+                <li><a href="/UI-UX Admin/dataKelurahan">Data Kelurahan</a></li>
+                <li><a href="/UI-UX Admin/dataPelanggan">Data Pelanggan</a></li>
+                <li><a href="/UI-UX Admin/dataMesin">Data Mesin Cuci & Tarif</a></li>
+                <li><a href="/UI-UX Admin/dataTransaksi">Data Transaksi</a></li>
+                <br><br><br><br><br><br><br><br><br><br><br>
+                <li id="logout"><a href="/login">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="content">
+        <header>
+            <h1>Selamat Datang, Admin!</h1>
+        </header>
+
+        <section id="data-kelurahan">
+            <h2>Data Kelurahan</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button id="tambah-kelurahan-button" type="button">Tambah Kelurahan</button>
+                <input type="text" id="search-input" placeholder="Cari nama kelurahan..."
+                    style="padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
+            </div>
+            <br>
+            <div id="form-tambah-kelurahan" style="display: none;">
+                <h3>Form Tambah Kelurahan</h3>
+                <form id="form-kelurahan" method="POST" action="/api/kelurahan/add">
+                    <div class="masukan">
+                        <label for="namaKelurahan">Nama Kelurahan</label>
+                        <input type="text" id="namaKelurahan" name="namaKelurahan" required>
+                    </div>
+                    <div class="masukan">
+                        <label for="kecamatanId">Nama Kecamatan</label>
+                        <select id="kecamatanId" name="kecamatanId" required>
+                            <option value="">Pilih Kecamatan</option>
+                        </select>
+                        <div id="kecamatan-warning" style="color: red; display: none;">
+                            Kecamatan belum tersedia. Harap tambahkan data kecamatan terlebih dahulu.
+                        </div>
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-button">Batal</button>
+                </form>
+            </div>
+            <div id="pagination">
+                <button id="prev-button" disabled>Previous</button>
+                <span id="page-numbers"></span>
+                <button id="next-button" disabled>Next</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kelurahan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="kelurahan-table-body">
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        // Handle tombol tambah dan batal
+        const tambahKelurahanButton = document.getElementById('tambah-kelurahan-button');
+        const formTambahKelurahan = document.getElementById('form-tambah-kelurahan');
+        const cancelButton = document.getElementById('cancel-button');
+        const kelurahanTableBody = document.getElementById('kelurahan-table-body');
+
+        tambahKelurahanButton.addEventListener('click', () => {
+            formTambahKelurahan.style.display = 'block';
+            tambahKelurahanButton.style.display = 'none';
+        });
+
+        cancelButton.addEventListener('click', () => {
+            formTambahKelurahan.style.display = 'none';
+            tambahKelurahanButton.style.display = 'block';
+        });
+
+        // Load data kecamatan
+        function loadKecamatan() {
+            fetch('/api/kecamatan/all') // Endpoint untuk data kecamatan
+                .then(response => response.json())
+                .then(data => {
+                    const kecamatanSelect = document.getElementById('kecamatanId');
+                    const kecamatanWarning = document.getElementById('kecamatan-warning');
+
+                    if (data.length === 0) {
+                        kecamatanSelect.style.display = 'none';
+                        kecamatanWarning.style.display = 'block';
+                    } else {
+                        // Isi dropdown kecamatan
+                        kecamatanSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+                        data.forEach(kecamatan => {
+                            const option = document.createElement('option');
+                            option.value = kecamatan.id;
+                            option.textContent = kecamatan.namaKecamatan;
+                            kecamatanSelect.appendChild(option);
+                        });
+
+                        kecamatanSelect.style.display = 'block';
+                        kecamatanWarning.style.display = 'none';
+                    }
+                })
+                .catch(error => console.error('Gagal memuat data kecamatan:', error));
+        }
+
+        // Panggil fungsi loadKecamatan saat halaman dimuat
+        loadKecamatan();
+
+        // Fungsi untuk memuat data kelurahan
+        let currentPage = 1;
+        let totalPages = 1;
+
+        function loadKelurahan(page = 1) {
+            fetch(`/api/kelurahan/all?page=${page}&size=16`)
+                .then(response => response.json())
+                .then(data => {
+                    const { data: kelurahanList, totalPages: total, currentPage: current } = data;
+
+                    totalPages = total;
+                    currentPage = current;
+
+                    kelurahanTableBody.innerHTML = ''; // Bersihkan tabel sebelumnya
+                    kelurahanList.forEach(kelurahan => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${kelurahan.id}</td>
+                            <td>${kelurahan.namaKelurahan}</td>
+                            <td>
+                                <button class="delete-button" data-id="${kelurahan.id}">Delete</button>
+                            </td>
+                        `;
+                        kelurahanTableBody.appendChild(row);
+                    });
+
+                    updatePagination();
+                    document.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', () => handleDelete(button.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Gagal memuat data kelurahan:', error));
+        }
+
+        function updatePagination() {
+            const pageNumbers = document.getElementById('page-numbers');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+
+            pageNumbers.innerHTML = ''; // Bersihkan nomor halaman sebelumnya
+
+            // Tambahkan nomor halaman
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                if (i === currentPage) {
+                    pageButton.disabled = true;
+                }
+                pageButton.addEventListener('click', () => loadKelurahan(i));
+                pageNumbers.appendChild(pageButton);
+            }
+
+            // Atur tombol Previous dan Next
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+
+            prevButton.onclick = () => {
+                if (currentPage > 1) {
+                    loadKelurahan(currentPage - 1);
+                }
+            };
+
+            nextButton.onclick = () => {
+                if (currentPage < totalPages) {
+                    loadKelurahan(currentPage + 1);
+                }
+            };
+        }
+
+        // Panggil loadKelurahan untuk pertama kali
+        loadKelurahan();
+    </script>
+</body>
+
+</html>

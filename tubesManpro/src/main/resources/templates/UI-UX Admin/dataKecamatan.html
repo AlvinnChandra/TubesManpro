@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newci Wash Master - Data Kecamatan</title>
+    <link rel="stylesheet" href="/styleAdmin.css">
+    <link rel="stylesheet" href="/Kelurahan.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a th:href="@{/admin}">Data Pegawai</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKecamatan}">Data Kecamatan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
+                <br><br><br><br><br><br><br><br><br><br><br>
+                <li id="logout"><a th:href="@{/login}">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="content">
+        <header>
+            <h1>Selamat Datang, Admin!</h1>
+        </header>
+
+        <section id="data-kecamatan">
+            <h2>Data Kecamatan</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button id="tambah-kecamatan-button" type="button">Tambah Kecamatan</button>
+                <input type="text" id="search-input" placeholder="Cari nama kecamatan..."
+                    style="padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
+            </div>
+            <br>
+            <div id="form-tambah-kecamatan" style="display: none;">
+                <h3>Form Tambah Kecamatan</h3>
+                <form id="form-kecamatan" method="POST" action="/api/kecamatan/add">
+                    <div class="masukan">
+                        <label for="namaKecamatan">Nama Kecamatan</label>
+                        <input type="text" id="namaKecamatan" name="namaKecamatan" required>
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-button">Batal</button>
+                </form>
+            </div>
+            <div id="pagination">
+                <button id="prev-button" disabled>Previous</button>
+                <span id="page-numbers"></span>
+                <button id="next-button" disabled>Next</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kecamatan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="kecamatan-table-body">
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script>
+        const tambahKecamatanButton = document.getElementById('tambah-kecamatan-button');
+        const formTambahKecamatan = document.getElementById('form-tambah-kecamatan');
+        const cancelButton = document.getElementById('cancel-button');
+        const kecamatanTableBody = document.getElementById('kecamatan-table-body');
+
+        tambahKecamatanButton.addEventListener('click', () => {
+            formTambahKecamatan.style.display = 'block';
+            tambahKecamatanButton.style.display = 'none';
+        });
+
+        cancelButton.addEventListener('click', () => {
+            formTambahKecamatan.style.display = 'none';
+            tambahKecamatanButton.style.display = 'block';
+        });
+
+        let currentPage = 1;
+        let totalPages = 1;
+
+        function loadKecamatan(page = 1) {
+            fetch(`/api/kecamatan/all?page=${page}&size=10`)
+                .then(response => response.json())
+                .then(data => {
+                    const { data: kecamatanList, totalPages: total, currentPage: current } = data;
+
+                    totalPages = total;
+                    currentPage = current;
+
+                    kecamatanTableBody.innerHTML = ''; // Bersihkan tabel sebelumnya
+                    kecamatanList.forEach(kecamatan => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                    <td>${kecamatan.id}</td>
+                    <td>${kecamatan.namaKecamatan}</td>
+                    <td>
+                        <button class="delete-button" data-id="${kecamatan.id}">Delete</button>
+                    </td>
+                `;
+                        kecamatanTableBody.appendChild(row);
+                    });
+
+                    updatePagination();
+                    document.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', () => handleDelete(button.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Gagal memuat data kecamatan:', error));
+        }
+
+        function updatePagination() {
+            const pageNumbers = document.getElementById('page-numbers');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+
+            pageNumbers.innerHTML = ''; // Bersihkan nomor halaman sebelumnya
+
+            // Tambahkan nomor halaman
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                if (i === currentPage) {
+                    pageButton.disabled = true;
+                }
+                pageButton.addEventListener('click', () => loadKecamatan(i));
+                pageNumbers.appendChild(pageButton);
+            }
+
+            // Atur tombol Previous dan Next
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+
+            prevButton.onclick = () => {
+                if (currentPage > 1) {
+                    loadKecamatan(currentPage - 1);
+                }
+            };
+
+            nextButton.onclick = () => {
+                if (currentPage < totalPages) {
+                    loadKecamatan(currentPage + 1);
+                }
+            };
+        }
+
+        // Panggil loadKecamatan untuk pertama kali
+        loadKecamatan();
+    </script>
+</body>
+
+</html>

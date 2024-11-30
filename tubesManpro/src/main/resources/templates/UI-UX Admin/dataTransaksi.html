@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newci Wash Master</title>
+    <link rel="stylesheet" href="/styleAdmin.css">
+    <link rel="stylesheet" href="/Transaksi.css">
+    <script defer src="script.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <nav>
+            <ul>
+                <li><a th:href="@{/admin}">Data Pegawai</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKecamatan}">Data Kecamatan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
+                <br><br><br><br><br><br><br><br><br><br><br>
+                <li id="logout"><a th:href="@{/login}">Log Out</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="content">
+        <header>
+            <h1>Selamat Datang, Admin!</h1>
+        </header>
+
+        <section id="data-transaksi">
+            <h2>Data Transaksi</h2>
+            <button id="tambah-transaksi-button" type="button">Tambah Transaksi</button>
+            <div id="form-tambah-transaksi" style="display: none;">
+                <h3>Form Tambah Transaksi</h3>
+                <form id="form-transaksi">
+                    <div class="masukan">
+                        <label for="id">ID</label>
+                        <input type="text" id="id" name="id" required>
+                        <label for="pelanggan">Nama Pelanggan</label>
+                        <input type="text" id="pelanggan" name="pelanggan" required>
+                        <label for="merek">Merek</label>
+                        <input type="text" id="merek" name="merek" required>
+                        <label for="tanggal">Tanggal</label>
+                        <input type="date" id="tanggal" name="tanggal" required>
+                        <label for="lama">Lama waktu pemakaian (dalam menit)</label>
+                        <input type="number" id="lama" name="lama" required min="0">
+                        <label for="jam_mulai">Jam Mulai</label>
+                        <input type="time" id="jam_mulai" name="jam_mulai" required>
+                        <label for="jam_selesai">Jam Selesai</label>
+                        <input type="time" id="jam_selesai" name="jam_selesai" required>
+                        <label for="tarif">Tarif</label>
+                        <input type="number" id="tarif" name="tarif" required min="0">
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-transaksi-button">Batal</button>
+                </form>
+            </div>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Pelanggan</th>
+                    <th>Merek</th>
+                    <th>Tanggal</th>
+                    <th>Lama waktu pemakaian (dalam menit)</th>
+                    <th>Jam Mulai</th>
+                    <th>Jam Selesai</th>
+                    <th>Tarif</th>
+                    <th>Aksi</th>
+                </tr>
+
+                <tr>
+                    <td>1</td>
+                    <td>Manuel</td>
+                    <td>Panasonic</td>
+                    <td>2-11-2024</td>
+                    <td>30</td>
+                    <td>09:10</td>
+                    <td>09:40</td>
+                    <td>450.000</td>
+                    <td>
+                        <button type="button">Edit</button>
+                        <button type="button">Delete</button>
+                    </td>
+                </tr>
+
+                <!-- <tbody id="transaksi-table">
+                    <Data akan diisi di sini>
+                </tbody> -->
+            </table>
+        </section>
+
+        <script>
+            const tambahTransaksiButton = document.getElementById('tambah-transaksi-button');
+            const formTambahTransaksi = document.getElementById('form-tambah-transaksi');
+            const cancelTransaksiButton = document.getElementById('cancel-transaksi-button');
+
+            tambahTransaksiButton.addEventListener('click', () => {
+                formTambahTransaksi.style.display = 'block';
+                tambahTransaksiButton.style.display = 'none';
+            });
+
+            cancelTransaksiButton.addEventListener('click', () => {
+                formTambahTransaksi.style.display = 'none';
+                tambahTransaksiButton.style.display = 'block';
+            });
+        </script>
+    </div>
+
+</html>
