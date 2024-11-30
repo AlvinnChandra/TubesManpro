@@ -45,6 +45,11 @@ public class LoginController {
         return "UI-UX Admin/Admin";
     }
 
+    @GetMapping("/UI-UX Admin/dataKecamatan")
+    public String dataKecamatanPage() {
+        return "UI-UX Admin/dataKecamatan";
+    }
+
     @GetMapping("/UI-UX Admin/dataKelurahan")
     public String dataKelurahanPage() {
         return "UI-UX Admin/dataKelurahan";

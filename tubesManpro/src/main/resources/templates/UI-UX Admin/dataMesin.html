@@ -16,6 +16,8 @@
         <nav>
             <ul>
                 <li><a th:href="@{/admin}">Data Pegawai</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKecamatan}">Data Kecamatan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
@@ -98,6 +100,8 @@
             fetch('/api/mesin/all')
                 .then(response => response.json())
                 .then(mesinList => {
+                    mesinList.sort((a, b) => a.id - b.id); // Sorting berdasarkan ID
+
                     mesinTableBody.innerHTML = ''; // Clear table body
                     mesinList.forEach(mesin => {
                         const row = document.createElement('tr');

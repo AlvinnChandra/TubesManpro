@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newci Wash Master</title>
+    <title>Newci Wash Master - Data Kelurahan</title>
     <link rel="stylesheet" href="/styleAdmin.css">
     <link rel="stylesheet" href="/Kelurahan.css">
-    <script defer src="script.js"></script>
+    <script defer src="kelurahanScript.js"></script>
 </head>
 
 <body>
@@ -15,94 +15,133 @@
         <h2>Admin Dashboard</h2>
         <nav>
             <ul>
-                <li><a th:href="@{/admin}">Data Pegawai</a></li>
-                <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
-                <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
-                <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
+                <li><a href="/admin">Data Pegawai</a></li>
+                <li><a href="/UI-UX Admin/dataKecamatan">Data Kecamatan</a></li>
+                <li><a href="/UI-UX Admin/dataKelurahan">Data Kelurahan</a></li>
+                <li><a href="/UI-UX Admin/dataPelanggan">Data Pelanggan</a></li>
+                <li><a href="/UI-UX Admin/dataMesin">Data Mesin Cuci & Tarif</a></li>
+                <li><a href="/UI-UX Admin/dataTransaksi">Data Transaksi</a></li>
                 <br><br><br><br><br><br><br><br><br><br><br>
-                <li id="logout"><a th:href="@{/login}">Log Out</a></li>
+                <li id="logout"><a href="/login">Log Out</a></li>
             </ul>
         </nav>
     </div>
-
     <div class="content">
         <header>
             <h1>Selamat Datang, Admin!</h1>
         </header>
 
-        <section id="data-lokasi">
-            <h2>Data Kelurahan/Kecamatan</h2>
-            <button id="tambah-lokasi-button" type="button">Tambah Lokasi</button>
-            <div id="form-tambah-lokasi" style="display: none;">
-                <h3>Form Tambah Lokasi</h3>
-                <form id="form-lokasi">
+        <section id="data-kelurahan">
+            <h2>Data Kelurahan</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <input type="text" id="search-input" placeholder="Cari nama kelurahan..."
+                    style="padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
+            </div>
+            <br>
+            <div id="form-tambah-kelurahan" style="display: none;">
+                <h3>Form Tambah Kelurahan</h3>
+                <form id="form-kelurahan" method="POST" action="/api/kelurahan/add">
                     <div class="masukan">
-                        <label for="id">ID</label>
-                        <input type="text" id="id" name="id" required>
-                        <label for="kecamatan">Kecamatan</label>
-                        <input type="text" id="kecamatan" name="kecamatan" required>
-                        <label for="kelurahan">Kelurahan</label>
-                        <input type="text" id="kelurahan" name="kelurahan" required>
+                        <label for="namaKelurahan">Nama Kelurahan</label>
+                        <input type="text" id="namaKelurahan" name="namaKelurahan" required>
+                    </div>
+                    <div class="masukan">
+                        <label for="kecamatanId">Nama Kecamatan</label>
+                        <select id="kecamatanId" name="kecamatanId" required>
+                            <option value="">Pilih Kecamatan</option>
+                        </select>
                     </div>
                     <button type="submit">Simpan</button>
-                    <button type="button" id="cancel-lokasi-button">Batal</button>
+                    <button type="button" id="cancel-button">Batal</button>
                 </form>
             </div>
+            <div id="pagination">
+                <button id="prev-button" disabled>Previous</button>
+                <span id="page-numbers"></span>
+                <button id="next-button" disabled>Next</button>
+            </div>
             <table>
-                <tr>
-                    <th>ID</th>
-                    <th>Kecamatan</th>
-                    <th>Kelurahan</th>
-                    <th>Aksi</th>
-                </tr>
-
-                <tr>
-                    <td>1</td>
-                    <td>Margaasih</td>
-                    <td>Rahayu</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>2</td>
-                    <td>Cidadap</td>
-                    <td>Hegarmanah</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
-                </tr>
-                <!-- <tbody id="lokasi-table">
-                    <Data akan diisi di sini>
-                </tbody> -->
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kelurahan</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="kelurahan-table-body">
+                </tbody>
             </table>
         </section>
-
-
     </div>
 
     <script>
-        const tambahLokasiButton = document.getElementById('tambah-lokasi-button');
-        const formTambahLokasi = document.getElementById('form-tambah-lokasi');
-        const cancelLokasiButton = document.getElementById('cancel-lokasi-button');
-        const overlay = document.querySelector('.overlay');
+        const tambahKelurahanButton = document.getElementById('tambah-kelurahan-button');
+        const formTambahKelurahan = document.getElementById('form-tambah-kelurahan');
+        const cancelButton = document.getElementById('cancel-button');
+        const kelurahanTableBody = document.getElementById('kelurahan-table-body');
+        const kecamatanSelect = document.getElementById('kecamatanId');
+        const searchInput = document.getElementById('search-input');
+        let currentPage = 1;
+        let totalPages = 1;
 
-        tambahLokasiButton.addEventListener('click', () => {
-            formTambahLokasi.style.display = 'block';
-            tambahLokasiButton.style.display = 'none';
-            overlay.classList.add('show');
+        function loadKelurahan(page = 1, search = "") {
+            fetch(`/api/kelurahan/all?page=${page}&size=16&search=${encodeURIComponent(search)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const { data: kelurahanList, totalPages: total, currentPage: current } = data;
+                    totalPages = total;
+                    currentPage = current;
+
+                    kelurahanTableBody.innerHTML = '';  // Clear previous rows
+                    kelurahanList.forEach(kelurahan => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${kelurahan.id}</td>
+                            <td>${kelurahan.namaKelurahan}</td>
+                            <td>
+                                <button class="delete-button" data-id="${kelurahan.id}">Delete</button>
+                            </td>
+                        `;
+                        kelurahanTableBody.appendChild(row);
+                    });
+
+                    updatePagination();
+
+                    document.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', () => handleDelete(button.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Error loading Kelurahan:', error));
+        }
+
+        function updatePagination() {
+            const pageNumbers = document.getElementById('page-numbers');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+
+            pageNumbers.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                if (i === currentPage) {
+                    pageButton.disabled = true;
+                }
+                pageButton.addEventListener('click', () => loadKelurahan(i, searchInput.value));
+                pageNumbers.appendChild(pageButton);
+            }
+
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+            prevButton.onclick = () => loadKelurahan(currentPage - 1, searchInput.value);
+            nextButton.onclick = () => loadKelurahan(currentPage + 1, searchInput.value);
+        }
+
+        searchInput.addEventListener('input', () => {
+            loadKelurahan(currentPage, searchInput.value);
         });
 
-        cancelLokasiButton.addEventListener('click', () => {
-            formTambahLokasi.style.display = 'none';
-            tambahLokasiButton.style.display = 'block';
-            overlay.classList.remove('show');
-        });
+        loadKelurahan();  // Initial load of Kelurahan
     </script>
-
 </body>
 
 </html>
