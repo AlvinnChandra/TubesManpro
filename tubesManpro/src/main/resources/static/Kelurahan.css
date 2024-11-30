@@ -1,5 +1,4 @@
-
-#form-tambah-lokasi {
+#form-tambah-kelurahan, #form-tambah-kecamatan{
     position: fixed;
     top: 50%;
     left: 50%;
@@ -16,28 +15,28 @@
     gap: 10px;
 }
 
-#form-tambah-lokasi h3 {
+#form-tambah-kelurahan h3 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-#form-tambah-lokasi form {
+#form-tambah-kelurahan form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-#form-tambah-lokasi label {
+#form-tambah-kelurahan label {
     font-weight: bold;
 }
 
-#form-tambah-lokasi input[type="text"] {
+#form-tambah-kelurahan input[type="text"] {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-#form-tambah-lokasi button {
+#form-tambah-kelurahan button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -48,15 +47,15 @@
     margin-right: 10px;
 }
 
-#form-tambah-lokasi button:hover {
+#form-tambah-kelurahan button:hover {
     background-color: #0056b3;
 }
 
-#form-tambah-lokasi #cancel-lokasi-button {
+#form-tambah-kelurahan #cancel-button {
     background-color: #dc3545;
 }
 
-#form-tambah-lokasi #cancel-lokasi-button:hover {
+#form-tambah-kelurahan #cancel-button:hover {
     background-color: #c82333;
 }
 
@@ -76,4 +75,12 @@ div :only-of-type label {
 div :only-of-type input {
     grid-column: 2;
     margin-right: 75px;
+}
+
+#form-tambah-kecamatan #cancel-button {
+    background-color: #dc3545;
+}
+
+#form-tambah-kecamatan #cancel-button:hover {
+    background-color: #c82333;
 }
