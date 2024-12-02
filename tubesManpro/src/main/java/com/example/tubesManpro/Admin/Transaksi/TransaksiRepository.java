@@ -3,8 +3,6 @@ package com.example.tubesManpro.Admin.Transaksi;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -43,8 +41,8 @@ public class TransaksiRepository {
     }
 
     // Mapping ResultSet ke TransaksiData
-    private MesinData mapRowTransaksi(ResultSet resultSet, int rowNum) throws SQLException {
-        return new MesinData(
+    private TransaksiData mapRowTransaksi(ResultSet resultSet, int rowNum) throws SQLException {
+        return new TransaksiData(
                 resultSet.getString("nama"),
                 resultSet.getString("merek"),
                 resultSet.getLocalDate("tanggal"),
