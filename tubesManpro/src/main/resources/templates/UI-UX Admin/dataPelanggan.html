@@ -37,32 +37,55 @@
             <button id="tambah-pelanggan-button" type="button">Tambah Pelanggan</button>
             <div id="form-tambah-pelanggan" style="display: none;">
                 <h3>Form Tambah Pelanggan</h3>
-                <form id="form-pelanggan">
-                    <div class="masukan">
-                        <label for="id">ID</label>
-                        <input type="text" id="id" name="id" required>
-                        <label for="nama">Nama</label>
-                        <input type="text" id="nama" name="nama" required>
-                        <label for="telepon">No. Telepon</label>
-                        <input type="text" id="telepon" name="telepon" required>
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
-                        <label for="kecamatan">Kecamatan</label>
-                        <select id="kecamatan" name="kecamatan" required>
-                            <option value="" disabled selected>Pilih Kecamatan</option>
-                        </select>
-                        <label for="kelurahan">Kelurahan:</label>
-                        <select id="kelurahan" name="kelurahan" required>
-                            <option value="" disabled selected>Pilih Kelurahan</option>
-                        </select>
-                        <div id="kelurahan-warning" style="color: red; display: none;">
-                            Kelurahan belum tersedia. Harap tambahkan data kelurahan terlebih dahulu.
-                        </div>
+                <form id="form-pelanggan" method="POST" action="/api/pelanggan/add">
+                    <label for="nama">Nama</label>
+                    <input type="text" id="nama" name="nama" required>
+                    <label for="telepon">No. Telepon</label>
+                    <input type="text" id="telepon" name="telepon" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="kecamatan">Kecamatan</label>
+                    <select id="kecamatan" name="kecamatan" required>
+                        <option value="" disabled selected>Pilih Kecamatan</option>
+                    </select>
+                    <label for="kelurahan">Kelurahan:</label>
+                    <select id="kelurahan" name="kelurahan" required>
+                        <option value="" disabled selected>Pilih Kelurahan</option>
+                    </select>
+                    <div id="kelurahan-warning" style="color: red; display: none;">
+                        Kelurahan belum tersedia. Harap tambahkan data kelurahan terlebih dahulu.
                     </div>
                     <button type="submit">Simpan</button>
                     <button type="button" id="cancel-pelanggan-button">Batal</button>
                 </form>
             </div>
+
+            <div id="form-edit-pelanggan" style="display: none;">
+                <h3>Form Edit Pelanggan</h3>
+                <form id="form-edit-pelanggan-form" method="POST">
+                    <input type="hidden" id="edit-id" name="id">
+                    <label for="edit-nama">Nama</label>
+                    <input type="text" id="edit-nama" name="nama" required>
+                    <label for="edit-telepon">No. Telepon</label>
+                    <input type="text" id="edit-telepon" name="telepon" required>
+                    <label for="edit-email">Email</label>
+                    <input type="email" id="edit-email" name="email" required>
+                    <label for="edit-kecamatan">Kecamatan</label>
+                    <select id="edit-kecamatan" name="kecamatan" required>
+                        <option value="" disabled selected>Pilih Kecamatan</option>
+                    </select>
+                    <label for="edit-kelurahan">Kelurahan:</label>
+                    <select id="edit-kelurahan" name="kelurahan" required>
+                        <option value="" disabled selected>Pilih Kelurahan</option>
+                    </select>
+                    <div id="kelurahan-warning-edit" style="color: red; display: none;">
+                        Kelurahan belum tersedia. Harap tambahkan data kelurahan terlebih dahulu.
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-edit-pelanggan-button">Batal</button>
+                </form>
+            </div>
+
             <table>
                 <tr>
                     <th>ID</th>
@@ -81,6 +104,7 @@
         const tambahPelangganButton = document.getElementById('tambah-pelanggan-button');
         const formTambahPelanggan = document.getElementById('form-tambah-pelanggan');
         const cancelPelangganButton = document.getElementById('cancel-pelanggan-button');
+        const cancelEditPelangganButton = document.getElementById('cancel-edit-pelanggan-button');
 
         tambahPelangganButton.addEventListener('click', () => {
             formTambahPelanggan.style.display = 'block';
@@ -92,17 +116,20 @@
             tambahPelangganButton.style.display = 'block';
         });
 
+        cancelEditPelangganButton.addEventListener('click', () => {
+            document.getElementById('form-edit-pelanggan').style.display = 'none';
+            document.getElementById('tambah-pelanggan-button').style.display = 'block';
+        });
+
         document.addEventListener("DOMContentLoaded", () => {
             const kecamatanDropdown = document.getElementById('kecamatan');
+            const kelurahanDropdown = document.getElementById('kelurahan');
 
             function loadKecamatanDropdown() {
                 fetch('/api/kecamatan/list')
                     .then(response => response.json())
                     .then(kecamatanList => {
-                        // Bersihkan dropdown sebelum menambahkan data
                         kecamatanDropdown.innerHTML = '<option value="" disabled selected>Pilih Kecamatan</option>';
-                        
-                        // Tambahkan opsi untuk setiap kecamatan
                         kecamatanList.forEach(kecamatan => {
                             const option = document.createElement('option');
                             option.value = kecamatan.id;
@@ -113,36 +140,34 @@
                     .catch(error => console.error('Gagal memuat data kecamatan:', error));
             }
 
-            // Panggil fungsi untuk mengisi dropdown
             loadKecamatanDropdown();
         });
 
         // Fungsi untuk memuat data kelurahan berdasarkan kecamatan
-        function loadKelurahan(kecamatan) {
-            fetch(`/api/kelurahan/by-kecamatan/${kecamatan}`)
-                .then(response => response.json())
-                .then(data => {
-                    const kelurahanSelect = document.getElementById('kelurahan');
-                    const kelurahanWarning = document.getElementById('kelurahan-warning');
+        function loadKelurahan(kecamatanId) {
+            const kelurahanDropdown = document.getElementById('edit-kelurahan'); // Pastikan ini adalah ID dropdown kelurahan pada form edit
+            kelurahanDropdown.innerHTML = '<option value="" disabled selected>Pilih Kelurahan</option>'; // Kosongkan dropdown kelurahan dulu
 
-                    if (data.length === 0) {
-                        kelurahanSelect.style.display = 'none';
-                        kelurahanWarning.style.display = 'block';
+            // Ambil data kelurahan berdasarkan ID kecamatan
+            fetch(`/api/kelurahan/by-kecamatan/${kecamatanId}`)
+                .then(response => response.json())
+                .then(kelurahanList => {
+                    // Cek apakah kelurahan ada
+                    if (kelurahanList.length === 0) {
+                        kelurahanDropdown.innerHTML = '<option value="" disabled selected>Kelurahan tidak tersedia</option>';
                     } else {
-                        kelurahanSelect.innerHTML = '<option value="" disabled selected>Pilih Kelurahan</option>';
-                        data.forEach(kelurahan => {
+                        kelurahanList.forEach(kelurahan => {
                             const option = document.createElement('option');
                             option.value = kelurahan.id;
                             option.textContent = kelurahan.namaKelurahan;
-                            kelurahanSelect.appendChild(option);
-                        });
 
-                        kelurahanSelect.style.display = 'block';
-                        kelurahanWarning.style.display = 'none';
+                            kelurahanDropdown.appendChild(option);
+                        });
                     }
                 })
-            .catch(error => console.error('Gagal memuat data kelurahan:', error));
+                .catch(error => console.error('Gagal memuat data kelurahan:', error));
         }
+
 
         // Hubungkan dropdown kecamatan dan kelurahan
         document.getElementById('kecamatan').addEventListener('change', event => {
@@ -151,6 +176,174 @@
                 loadKelurahan(kecamatan);
             }
         });
+
+        document.getElementById('edit-kecamatan').addEventListener('change', event => {
+            const kecamatan = event.target.value;
+            if (kecamatan) {
+                loadKelurahan(kecamatan);
+            }
+        });
+
+        document.getElementById('form-pelanggan').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            fetch('/api/pelanggan/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nama: formData.get('nama'),
+                    telepon: formData.get('telepon'),
+                    email: formData.get('email'),
+                    idKecamatan: formData.get('kecamatan'),
+                    idKelurahan: formData.get('kelurahan')
+                }),
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert(result.message);
+                loadPelangganTable();
+                this.reset();
+                document.getElementById('form-tambah-pelanggan').style.display = 'none';
+                document.getElementById('tambah-pelanggan-button').style.display = 'block';
+            })
+            .catch(error => console.error('Gagal menyimpan data:', error));
+        });
+
+        function loadPelangganTable() {
+            fetch('/api/pelanggan/all')
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.querySelector('table');
+                    const rows = data.map(pelanggan => `
+                        <tr>
+                            <td>${pelanggan.id}</td>
+                            <td>${pelanggan.nama}</td>
+                            <td>${pelanggan.telepon}</td>
+                            <td>${pelanggan.email}</td>
+                            <td>${pelanggan.kecamatan}</td>
+                            <td>${pelanggan.kelurahan}</td>
+                            <td>
+                                <button onclick="editPelanggan(${pelanggan.id})">Edit</button>
+                                <button onclick="deletePelanggan(${pelanggan.id})">Hapus</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                    table.innerHTML = `
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>No. Telepon</th>
+                            <th>Email</th>
+                            <th>Kecamatan</th>
+                            <th>Kelurahan</th>
+                            <th>Aksi</th>
+                        </tr>
+                        ${rows}
+                    `;
+                })
+                .catch(error => console.error('Gagal memuat data pelanggan:', error));
+        }
+
+        function deletePelanggan(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus pelanggan ini?')) {
+                fetch(`/api/pelanggan/${id}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(result => {
+                        alert(result.message);
+                        loadPelangganTable(); // Perbarui tabel
+                    })
+                    .catch(error => console.error('Gagal menghapus data:', error));
+            }
+        }
+
+        function editPelanggan(id) {
+            // Ambil data pelanggan berdasarkan ID
+            fetch(`/api/pelanggan/${id}`)
+                .then(response => response.json())
+                .then(pelanggan => {
+                    // Set data pelanggan ke dalam form edit
+                    document.getElementById('edit-id').value = pelanggan.id;
+                    document.getElementById('edit-nama').value = pelanggan.nama;
+                    document.getElementById('edit-telepon').value = pelanggan.telepon;
+                    document.getElementById('edit-email').value = pelanggan.email;
+                    document.getElementById('edit-kecamatan').value = pelanggan.idKecamatan; // Set kecamatan yang sesuai
+
+                    // Muat kecamatan ke dalam dropdown kecamatan
+                    loadKecamatanDropdownForEdit(pelanggan.idKecamatan); // Fungsi untuk memuat kecamatan dan memilih yang sesuai
+
+                    // Tampilkan form edit dan sembunyikan form tambah
+                    document.getElementById('form-edit-pelanggan').style.display = 'block';
+                    document.getElementById('form-tambah-pelanggan').style.display = 'none';
+                })
+                .catch(error => console.error('Gagal mengambil data pelanggan:', error));
+        }
+
+
+        function loadKecamatanDropdownForEdit(selectedKecamatanId) {
+            const kecamatanDropdown = document.getElementById('edit-kecamatan');
+            kecamatanDropdown.innerHTML = '<option value="" disabled selected>Pilih Kecamatan</option>'; // Kosongkan dulu
+
+            // Ambil daftar kecamatan dari server
+            fetch('/api/kecamatan/list') // Pastikan endpoint ini sesuai dengan API yang Anda punya
+                .then(response => response.json())
+                .then(kecamatanList => {
+                    kecamatanList.forEach(kecamatan => {
+                        const option = document.createElement('option');
+                        option.value = kecamatan.id;
+                        option.textContent = kecamatan.namaKecamatan;
+
+                        // Pilih kecamatan yang sesuai dengan id yang dipilih
+                        if (kecamatan.id === selectedKecamatanId) {
+                            option.selected = true;
+                        }
+
+                        kecamatanDropdown.appendChild(option);
+                    });
+
+                    // Setelah mengisi kecamatan, muat kelurahan berdasarkan kecamatan yang dipilih
+                    loadKelurahan(selectedKecamatanId);
+                })
+                .catch(error => console.error('Gagal memuat data kecamatan:', error));
+        }
+
+        document.getElementById('form-edit-pelanggan-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            fetch(`/api/pelanggan/${data.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nama: data.nama,
+                    telepon: data.telepon,
+                    email: data.email,
+                    idKecamatan: data.kecamatan,
+                    idKelurahan: data.kelurahan
+                }),
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert(result.message);
+                loadPelangganTable(); // Perbarui tabel
+                document.getElementById('form-edit-pelanggan').style.display = 'none';
+                document.getElementById('tambah-pelanggan-button').style.display = 'block';
+            })
+            .catch(error => console.error('Gagal memperbarui data:', error));
+        });
+
+
+        // Panggil fungsi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadPelangganTable);
+
 
         // Panggil fungsi loadKecamatan saat halaman dimuat
         document.addEventListener('DOMContentLoaded', loadKecamatan);

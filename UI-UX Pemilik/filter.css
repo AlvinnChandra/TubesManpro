@@ -1,4 +1,4 @@
-#form-tambah-transaksi {
+#filterTgl {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -15,30 +15,24 @@
     gap: 10px;
 }
 
-#form-tambah-transaksi h3 {
+#filterTgl h3 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-#form-tambah-transaksi form {
+#filterTgl form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-
-#form-tambah-transaksi label {
+#filterTgl label {
     font-weight: bold;
 }
 
-#form-tambah-transaksi input, #form-tambah-transaksi select {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
 
 
-#form-tambah-transaksi button {
+#filterTgl button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -49,35 +43,33 @@
     margin-right: 10px;
 }
 
-
-#form-tambah-transaksi button:hover {
+#filterTgl button:hover {
     background-color: #0056b3;
 }
 
-
-#form-tambah-transaksi #cancel-transaksi-button {
+#filterTgl #cancel-button {
     background-color: #dc3545;
 }
 
-
-#form-tambah-transaksi #cancel-transaksi-button:hover {
+#filterTgl #cancel-button:hover {
     background-color: #c82333;
 }
 
-.masukan {
+#masukan {
     display: grid;
     grid-template-columns: 250px 250px;
-    justify-content: center;   
-    row-gap: 5px;  
+    justify-content: center; 
+    row-gap: 10px;  
     align-items: center;
 }
 
 div :only-of-type label {
     grid-column: 1;
-    margin-left: 25px;
+    margin-left: 75px;
+    
 }
 
-div :only-of-type input, div :only-of-type select {
+div :only-of-type input {
     grid-column: 2;
-    margin-right: 25px;
+    margin-right: 75px;
 }

@@ -287,3 +287,25 @@ VALUES
 ('Pasirjati', 30),
 ('Pasirwangi', 30);
 
+
+CREATE TABLE pelanggan (
+    id SERIAL PRIMARY KEY,
+    nama VARCHAR(100) NOT NULL,
+    telepon VARCHAR(15) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    kecamatan VARCHAR(100) NOT NULL,
+    kelurahan VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE transaksi (
+	id SERIAL PRIMARY KEY,
+    nama VARCHAR(255),
+	merek VARCHAR(255),
+	tanggal Date,
+	waktuPakai INT NOT NULL,
+	jamMulai Time,
+	jamSelesai Time,
+    tarif INT NOT NULL
+);
+
+
