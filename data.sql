@@ -296,3 +296,16 @@ CREATE TABLE pelanggan (
     kecamatan VARCHAR(100) NOT NULL,
     kelurahan VARCHAR(100) NOT NULL
 );
+
+CREATE TABLE transaksi (
+	id SERIAL PRIMARY KEY,
+    nama VARCHAR(255),
+	merek VARCHAR(255),
+	tanggal Date,
+	waktuPakai INT NOT NULL,
+	jamMulai Time,
+	jamSelesai Time,
+    tarif INT NOT NULL
+);
+
+

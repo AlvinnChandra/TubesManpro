@@ -34,9 +34,7 @@
 }
 
 
-#form-tambah-pelanggan input[type="text"],
-#form-tambah-pelanggan input[type="email"],
-#form-tambah-pelanggan input[type="number"] {
+#form-tambah-pelanggan input, #form-tambah-pelanggan select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -82,14 +80,8 @@ div :only-of-type label {
     
 }
 
-div :only-of-type input {
+div :only-of-type input,  div :only-of-type select{
     grid-column: 2;
     margin-right: 50px;
 }
 
-#form-tambah-pelanggan select {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-}

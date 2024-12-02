@@ -53,4 +53,9 @@ public class jdbcMesinRepository {
                 resultSet.getInt("kapasitas"),
                 resultSet.getInt("tarif"));
     }
+
+    public List<MesinData> findAllMerek() {
+        String sql = "SELECT merek FROM mesin";
+        return jdbcTemplate.query(sql, this::mapRowToMesin);
+    }
 }

@@ -2,6 +2,9 @@ package com.example.tubesManpro.Admin.Mesin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import com.example.tubesManpro.Admin.Kecamatan.KecamatanData;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,5 +70,10 @@ public class MesinController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Mesin berhasil dihapus");
         return response;
+    }
+
+    @GetMapping("/list")
+    public List<MesinData> getAllMerek() {
+        return mesinRepository.findAllMerek();
     }
 }

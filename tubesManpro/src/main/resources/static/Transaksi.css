@@ -31,15 +31,7 @@
     font-weight: bold;
 }
 
-#form-tambah-transaksi input[type="text"],
-
-#form-tambah-transaksi input[type="email"],
-
-#form-tambah-transaksi input[type="date"],
-
-#form-tambah-transaksi input[type="time"],
-
-#form-tambah-transaksi input[type="number"] {
+#form-tambah-transaksi input, #form-tambah-transaksi select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -85,7 +77,7 @@ div :only-of-type label {
     margin-left: 25px;
 }
 
-div :only-of-type input {
+div :only-of-type input, div :only-of-type select {
     grid-column: 2;
     margin-right: 25px;
 }
