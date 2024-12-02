@@ -144,8 +144,8 @@
         });
 
         // Fungsi untuk memuat data kelurahan berdasarkan kecamatan
-        function loadKelurahan(kecamatanId) {
-            const kelurahanDropdown = document.getElementById('edit-kelurahan'); // Pastikan ini adalah ID dropdown kelurahan pada form edit
+        function loadKelurahan(kecamatanId, kelurahanDropdownId) {
+            const kelurahanDropdown = document.getElementById(kelurahanDropdownId);
             kelurahanDropdown.innerHTML = '<option value="" disabled selected>Pilih Kelurahan</option>'; // Kosongkan dropdown kelurahan dulu
 
             // Ambil data kelurahan berdasarkan ID kecamatan
@@ -160,7 +160,6 @@
                             const option = document.createElement('option');
                             option.value = kelurahan.id;
                             option.textContent = kelurahan.namaKelurahan;
-
                             kelurahanDropdown.appendChild(option);
                         });
                     }
@@ -169,18 +168,19 @@
         }
 
 
+
         // Hubungkan dropdown kecamatan dan kelurahan
         document.getElementById('kecamatan').addEventListener('change', event => {
             const kecamatan = event.target.value;
             if (kecamatan) {
-                loadKelurahan(kecamatan);
+                loadKelurahan(kecamatan, 'kelurahan');
             }
         });
 
         document.getElementById('edit-kecamatan').addEventListener('change', event => {
             const kecamatan = event.target.value;
             if (kecamatan) {
-                loadKelurahan(kecamatan);
+                loadKelurahan(kecamatan, 'edit-kelurahan');
             }
         });
 
