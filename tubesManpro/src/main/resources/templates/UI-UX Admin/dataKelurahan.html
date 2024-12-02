@@ -4,10 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Newci Wash Master - Data Kelurahan</title>
     <link rel="stylesheet" href="/styleAdmin.css">
     <link rel="stylesheet" href="/Kelurahan.css">
     <script defer src="kelurahanScript.js"></script>
+=======
+    <title>Data Kelurahan/Kecamatan</title>
+    <link rel="stylesheet" href="/styleAdmin.css">
+    <link rel="stylesheet" href="/Kelurahan.css">
+>>>>>>> 4456788fbb3fe658817824ba969f4931c1d70f45
 </head>
 
 <body>
@@ -15,6 +21,7 @@
         <h2>Admin Dashboard</h2>
         <nav>
             <ul>
+<<<<<<< HEAD
                 <li><a href="/admin">Data Pegawai</a></li>
                 <li><a href="/UI-UX Admin/dataKecamatan">Data Kecamatan</a></li>
                 <li><a href="/UI-UX Admin/dataKelurahan">Data Kelurahan</a></li>
@@ -23,14 +30,23 @@
                 <li><a href="/UI-UX Admin/dataTransaksi">Data Transaksi</a></li>
                 <br><br><br><br><br><br><br><br><br><br><br>
                 <li id="logout"><a href="/login">Log Out</a></li>
+=======
+                <li><a th:href="@{/admin}">Data Pegawai</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan/Kecamatan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
+                <li id="logout"><a th:href="@{/login}">Log Out</a></li>
+>>>>>>> 4456788fbb3fe658817824ba969f4931c1d70f45
             </ul>
         </nav>
     </div>
     <div class="content">
         <header>
-            <h1>Selamat Datang, Admin!</h1>
+            <h1>Data Kelurahan/Kecamatan</h1>
         </header>
 
+<<<<<<< HEAD
         <section id="data-kelurahan">
             <h2>Data Kelurahan</h2>
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -60,19 +76,55 @@
                 <span id="page-numbers"></span>
                 <button id="next-button" disabled>Next</button>
             </div>
+=======
+        <section id="data-lokasi">
+            <h2>Data Kecamatan</h2>
+>>>>>>> 4456788fbb3fe658817824ba969f4931c1d70f45
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
+<<<<<<< HEAD
                         <th>Kelurahan</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="kelurahan-table-body">
+=======
+                        <th>Kecamatan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Iterasi data Kecamatan -->
+                    <tr th:each="kecamatan : ${kecamatanList}">
+                        <td th:text="${kecamatan.id}"></td>
+                        <td th:text="${kecamatan.namaKecamatan}"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Data Kelurahan</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kelurahan</th>
+                        <th>Kecamatan ID</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Iterasi data Kelurahan -->
+                    <tr th:each="kelurahan : ${kelurahanList}">
+                        <td th:text="${kelurahan.id}"></td>
+                        <td th:text="${kelurahan.namaKelurahan}"></td>
+                        <td th:text="${kelurahan.kecamatanId}"></td>
+                    </tr>
+>>>>>>> 4456788fbb3fe658817824ba969f4931c1d70f45
                 </tbody>
             </table>
         </section>
     </div>
+<<<<<<< HEAD
 
     <script>
         const tambahKelurahanButton = document.getElementById('tambah-kelurahan-button');
@@ -142,6 +194,8 @@
 
         loadKelurahan();  // Initial load of Kelurahan
     </script>
+=======
+>>>>>>> 4456788fbb3fe658817824ba969f4931c1d70f45
 </body>
 
 </html>
