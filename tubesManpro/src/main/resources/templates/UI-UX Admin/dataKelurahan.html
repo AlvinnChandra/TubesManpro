@@ -84,6 +84,7 @@
         let currentPage = 1;
         let totalPages = 1;
 
+        // Load Kelurahan function
         function loadKelurahan(page = 1, search = "") {
             fetch(`/api/kelurahan/all?page=${page}&size=16&search=${encodeURIComponent(search)}`)
                 .then(response => response.json())
@@ -107,6 +108,7 @@
 
                     updatePagination();
 
+                    // Event listener untuk tombol delete
                     document.querySelectorAll('.delete-button').forEach(button => {
                         button.addEventListener('click', () => handleDelete(button.dataset.id));
                     });
@@ -114,6 +116,28 @@
                 .catch(error => console.error('Error loading Kelurahan:', error));
         }
 
+        // Function for handling the delete request
+        function handleDelete(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus kelurahan ini?')) {
+                fetch(`/api/kelurahan/${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Kelurahan berhasil dihapus');
+                            loadKelurahan(currentPage, searchInput.value);  // Reload data setelah penghapusan
+                        } else {
+                            alert('Gagal menghapus kelurahan');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Gagal menghapus kelurahan:', error);
+                        alert('Terjadi kesalahan dalam menghapus kelurahan');
+                    });
+            }
+        }
+
+        // Update pagination based on current and total pages
         function updatePagination() {
             const pageNumbers = document.getElementById('page-numbers');
             const prevButton = document.getElementById('prev-button');
@@ -136,6 +160,7 @@
             nextButton.onclick = () => loadKelurahan(currentPage + 1, searchInput.value);
         }
 
+        // Event listener for search input
         searchInput.addEventListener('input', () => {
             loadKelurahan(currentPage, searchInput.value);
         });

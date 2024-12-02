@@ -34,22 +34,23 @@ public class PelangganController {
     }
 
     @PutMapping("/{id}")
-    public Map<String, String> updatePelanggan(@PathVariable int id, @RequestParam String nama,
-            @RequestParam String telepon, @RequestParam String email,
-            @RequestParam String kecamatan, @RequestParam String kelurahan) {
-        Pelanggan pelanggan = new Pelanggan();
-        pelanggan.setId(id);
-        pelanggan.setNama(nama);
-        pelanggan.setTelepon(telepon);
-        pelanggan.setEmail(email);
-        pelanggan.setKecamatan(kecamatan);
-        pelanggan.setKelurahan(kelurahan);
-        pelangganRepository.update(pelanggan);
+    public Map<String, String> updatePelanggan(@PathVariable int id, @RequestBody Pelanggan pelanggan) {
+        // Mengupdate data pelanggan dengan ID yang sudah ada
+        Pelanggan existingPelanggan = pelangganRepository.findById(id);
+        if (existingPelanggan != null) {
+            pelanggan.setId(id);
+            pelangganRepository.update(pelanggan);
 
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Pelanggan berhasil diperbarui");
-        return response;
-    }
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Pelanggan berhasil diperbarui");
+            return response;
+        } else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Pelanggan tidak ditemukan");
+            return response;
+        }
+}
+
 
     @DeleteMapping("/{id}")
     public Map<String, String> deletePelanggan(@PathVariable int id) {

@@ -14,4 +14,6 @@ public class Pelanggan {
     private String email;
     private String kecamatan;
     private String kelurahan;
+    private int idKecamatan;
+    private int idKelurahan;
 }

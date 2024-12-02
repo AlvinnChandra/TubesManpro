@@ -238,8 +238,6 @@
                     tarif: parseInt(formData.get('tarif'))
                 };
 
-                console.log('Data transaksi yang dikirim:', transaksiData);
-
                 // Kirim data ke server
                 fetch('/api/transaksi/add', {
                     method: 'POST',

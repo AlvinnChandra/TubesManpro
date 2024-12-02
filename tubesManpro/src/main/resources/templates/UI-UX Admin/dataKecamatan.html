@@ -108,6 +108,20 @@
                 .catch(error => console.error('Gagal memuat data kecamatan:', error));
         }
 
+        function handleDelete(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus kecamatan ini?')) {
+                fetch(`/api/kecamatan/${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message); // Menampilkan pesan dari server setelah sukses menghapus
+                        loadKecamatan(currentPage, searchQuery); // Reload data setelah penghapusan
+                    })
+                    .catch(error => console.error('Gagal menghapus kecamatan:', error));
+            }
+        }
+
         // Fungsi untuk memperbarui pagination
         function updatePagination() {
             const pageNumbers = document.getElementById('page-numbers');
@@ -154,6 +168,7 @@
         // Panggil loadKecamatan untuk pertama kali
         loadKecamatan();
     </script>
+
 </body>
 
 </html>
