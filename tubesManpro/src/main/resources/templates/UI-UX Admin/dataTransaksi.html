@@ -16,7 +16,8 @@
         <nav>
             <ul>
                 <li><a th:href="@{/admin}">Data Pegawai</a></li>
-                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan/Kecamatan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKecamatan}">Data Kecamatan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
@@ -38,12 +39,15 @@
                 <h3>Form Tambah Transaksi</h3>
                 <form id="form-transaksi">
                     <div class="masukan">
-                        <label for="id">ID</label>
-                        <input type="text" id="id" name="id" required>
                         <label for="pelanggan">Nama Pelanggan</label>
-                        <input type="text" id="pelanggan" name="pelanggan" required>
+                        <select id="pelanggan" name="pelanggan" required>
+                            <option value="" disabled selected>Pilih Pelanggan</option>
+                        </select>
+
                         <label for="merek">Merek</label>
-                        <input type="text" id="merek" name="merek" required>
+                        <select id="merek" name="merek" required>
+                            <option value="" disabled selected>Pilih Merek Mesin Cuci</option>
+                        </select>
                         <label for="tanggal">Tanggal</label>
                         <input type="date" id="tanggal" name="tanggal" required>
                         <label for="lama">Lama waktu pemakaian (dalam menit)</label>
@@ -73,18 +77,7 @@
                 </tr>
 
                 <tr>
-                    <td>1</td>
-                    <td>Manuel</td>
-                    <td>Panasonic</td>
-                    <td>2-11-2024</td>
-                    <td>30</td>
-                    <td>09:10</td>
-                    <td>09:40</td>
-                    <td>450.000</td>
-                    <td>
-                        <button type="button">Edit</button>
-                        <button type="button">Delete</button>
-                    </td>
+                    <tbody id="transaksi-table-body"></tbody>
                 </tr>
 
                 <!-- <tbody id="transaksi-table">
@@ -97,6 +90,7 @@
             const tambahTransaksiButton = document.getElementById('tambah-transaksi-button');
             const formTambahTransaksi = document.getElementById('form-tambah-transaksi');
             const cancelTransaksiButton = document.getElementById('cancel-transaksi-button');
+            const transaksiTableBody = document.getElementById('transaksi-table-body');
 
             tambahTransaksiButton.addEventListener('click', () => {
                 formTambahTransaksi.style.display = 'block';
@@ -107,6 +101,174 @@
                 formTambahTransaksi.style.display = 'none';
                 tambahTransaksiButton.style.display = 'block';
             });
+
+            function loadTransaksi() {
+                fetch('/api/transaksi/all')
+                    .then(response => response.json())
+                    .then(transaksiList => {
+                        transaksiTableBody.innerHTML = ''; // Bersihkan tabel sebelum mengisi ulang
+                        transaksiList.forEach(transaksi => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${transaksi.id}</td>
+                                <td>${transaksi.nama}</td>
+                                <td>${transaksi.merek}</td>
+                                <td>${transaksi.tanggal}</td>
+                                <td>${transaksi.waktuPakai}</td>
+                                <td>${transaksi.jamMulai}</td>
+                                <td>${transaksi.jamSelesai}</td>
+                                <td>${transaksi.tarif}</td>
+                                <td>
+                                    <button class="update-button" data-id="${transaksi.id}">Update</button>
+                                    <button class="delete-button" data-id="${transaksi.id}">Delete</button>
+                                </td>
+                            `;
+                            transaksiTableBody.appendChild(row);
+                        });
+
+                        // Tambah event listener untuk tombol Update dan Delete jika diperlukan
+                    })
+                    .catch(error => {
+                        console.error('Gagal memuat data transaksi:', error);
+                    });
+            }
+
+            // Panggil fungsi ini setelah halaman dimuat
+            document.addEventListener('DOMContentLoaded', () => {
+                loadTransaksi();
+            });
+
+
+            function handleUpdateMesin(id) {
+                // Ambil data mesin yang akan diupdate
+                fetch(`/api/mesin/${id}`)
+                    .then(response => response.json())
+                    .then(mesin => {
+                        // Isi data mesin ke dalam form update
+                        document.getElementById('update-id').value = mesin.id;
+                        document.getElementById('update-merek').value = mesin.merek;
+                        document.getElementById('update-kapasitas').value = mesin.kapasitas;
+                        document.getElementById('update-tarif').value = mesin.tarif;
+
+                        // Tampilkan form update
+                        document.getElementById('form-update-mesin').style.display = 'block';
+                    })
+                    .catch(error => console.error('Gagal memuat data mesin:', error));
+            }
+
+            function handleDeleteMesin(id) {
+                if (confirm(`Apakah Anda yakin ingin menghapus mesin dengan ID ${id}?`)) {
+                    fetch(`/api/mesin/${id}`, {
+                        method: 'DELETE',
+                    })
+                        .then(() => {
+                            loadMesin();
+                        })
+                        .catch(error => {
+                            console.error('Gagal menghapus mesin:', error);
+                        });
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const merekDropdown = document.getElementById('merek');
+
+                function loadMerekDropdown() {
+                    fetch('/api/transaksi/list')
+                        .then(response => response.json())
+                        .then(merekList => {
+                            // Bersihkan dropdown sebelum menambahkan data
+                            merekDropdown.innerHTML = '<option value="" disabled selected>Pilih Merek Mesin Cuci</option>';
+                            
+                            // Tambahkan opsi untuk setiap merek
+                            merekList.forEach(merek => {
+                                const option = document.createElement('option');
+                                option.value = merek;
+                                option.textContent = merek;
+                                merekDropdown.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error('Gagal memuat data merek:', error));
+                }
+
+                // Panggil fungsi untuk mengisi dropdown
+                loadMerekDropdown();
+            });
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const pelangganDropdown = document.getElementById('pelanggan');
+
+                function loadPelangganDropdown() {
+                    fetch('/api/transaksi/pelanggan')
+                        .then(response => response.json())
+                        .then(pelangganList => {
+                            // Bersihkan dropdown sebelum menambahkan data
+                            pelangganDropdown.innerHTML = '<option value="" disabled selected>Pilih Pelanggan</option>';
+                            
+                            // Tambahkan opsi untuk setiap nama pelanggan
+                            pelangganList.forEach(pelanggan => {
+                                const option = document.createElement('option');
+                                option.value = pelanggan;
+                                option.textContent = pelanggan;
+                                pelangganDropdown.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error('Gagal memuat data pelanggan:', error));
+                }
+
+                // Panggil fungsi untuk mengisi dropdown
+                loadPelangganDropdown();
+            });
+
+            const formTransaksi = document.getElementById('form-transaksi');
+
+            formTransaksi.addEventListener('submit', (event) => {
+                event.preventDefault(); // Mencegah reload halaman
+
+                const formData = new FormData(formTransaksi);
+
+                // Buat objek JSON dari form data
+                const transaksiData = {
+                    nama: formData.get('pelanggan'),
+                    merek: formData.get('merek'),
+                    tanggal: formData.get('tanggal'),
+                    waktuPakai: parseInt(formData.get('lama')),
+                    jamMulai: formData.get('jam_mulai'),
+                    jamSelesai: formData.get('jam_selesai'),
+                    tarif: parseInt(formData.get('tarif'))
+                };
+
+                console.log('Data transaksi yang dikirim:', transaksiData);
+
+                // Kirim data ke server
+                fetch('/api/transaksi/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transaksiData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Gagal menyimpan transaksi');
+                    }
+                    return response.text();
+                })
+                .then(message => {
+                    alert(message);
+                    formTransaksi.reset(); // Reset form
+                    loadTransaksi(); // Refresh tabel transaksi
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Terjadi kesalahan: ' + error.message);
+                });
+
+                // Sembunyikan form
+                formTambahTransaksi.style.display = 'none';
+                tambahTransaksiButton.style.display = 'block';
+            });
+
         </script>
     </div>
 

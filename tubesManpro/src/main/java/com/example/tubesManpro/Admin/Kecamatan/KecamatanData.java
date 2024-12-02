@@ -1,4 +1,4 @@
-package com.example.tubesManpro.Admin.Kelurahan;
+package com.example.tubesManpro.Admin.Kecamatan;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Kelurahan {
+public class KecamatanData {
     private int id;
-    private String namaKelurahan;
-    private int kecamatanId;
+    private String namaKecamatan;
 }

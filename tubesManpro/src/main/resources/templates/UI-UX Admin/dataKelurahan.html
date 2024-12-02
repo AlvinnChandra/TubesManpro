@@ -4,9 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Kelurahan/Kecamatan</title>
+    <title>Newci Wash Master - Data Kelurahan</title>
     <link rel="stylesheet" href="/styleAdmin.css">
     <link rel="stylesheet" href="/Kelurahan.css">
+    <script defer src="kelurahanScript.js"></script>
 </head>
 
 <body>
@@ -14,59 +15,158 @@
         <h2>Admin Dashboard</h2>
         <nav>
             <ul>
-                <li><a th:href="@{/admin}">Data Pegawai</a></li>
-                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan/Kecamatan</a></li>
-                <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
-                <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
-                <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
-                <li id="logout"><a th:href="@{/login}">Log Out</a></li>
+                <li><a href="/admin">Data Pegawai</a></li>
+                <li><a href="/UI-UX Admin/dataKecamatan">Data Kecamatan</a></li>
+                <li><a href="/UI-UX Admin/dataKelurahan">Data Kelurahan</a></li>
+                <li><a href="/UI-UX Admin/dataPelanggan">Data Pelanggan</a></li>
+                <li><a href="/UI-UX Admin/dataMesin">Data Mesin Cuci & Tarif</a></li>
+                <li><a href="/UI-UX Admin/dataTransaksi">Data Transaksi</a></li>
+                <br><br><br><br><br><br><br><br><br><br><br>
+                <li id="logout"><a href="/login">Log Out</a></li>
             </ul>
         </nav>
     </div>
-
     <div class="content">
         <header>
             <h1>Data Kelurahan/Kecamatan</h1>
         </header>
 
-        <section id="data-lokasi">
-            <h2>Data Kecamatan</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Kecamatan</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Iterasi data Kecamatan -->
-                    <tr th:each="kecamatan : ${kecamatanList}">
-                        <td th:text="${kecamatan.id}"></td>
-                        <td th:text="${kecamatan.namaKecamatan}"></td>
-                    </tr>
-                </tbody>
-            </table>
-
+        <section id="data-kelurahan">
             <h2>Data Kelurahan</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <input type="text" id="search-input" placeholder="Cari nama kelurahan..."
+                    style="padding: 5px; border: 1px solid #ccc; border-radius: 5px;" />
+            </div>
+            <br>
+            <div id="form-tambah-kelurahan" style="display: none;">
+                <h3>Form Tambah Kelurahan</h3>
+                <form id="form-kelurahan" method="POST" action="/api/kelurahan/add">
+                    <div class="masukan">
+                        <label for="namaKelurahan">Nama Kelurahan</label>
+                        <input type="text" id="namaKelurahan" name="namaKelurahan" required>
+                    </div>
+                    <div class="masukan">
+                        <label for="kecamatanId">Nama Kecamatan</label>
+                        <select id="kecamatanId" name="kecamatanId" required>
+                            <option value="">Pilih Kecamatan</option>
+                        </select>
+                    </div>
+                    <button type="submit">Simpan</button>
+                    <button type="button" id="cancel-button">Batal</button>
+                </form>
+            </div>
+            <div id="pagination">
+                <button id="prev-button" disabled>Previous</button>
+                <span id="page-numbers"></span>
+                <button id="next-button" disabled>Next</button>
+            </div>
             <table>
                 <thead>
                     <tr>
                         <th>ID</th>
                         <th>Kelurahan</th>
-                        <th>Kecamatan ID</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Iterasi data Kelurahan -->
-                    <tr th:each="kelurahan : ${kelurahanList}">
-                        <td th:text="${kelurahan.id}"></td>
-                        <td th:text="${kelurahan.namaKelurahan}"></td>
-                        <td th:text="${kelurahan.kecamatanId}"></td>
-                    </tr>
+                <tbody id="kelurahan-table-body">
                 </tbody>
             </table>
         </section>
     </div>
+
+    <script>
+        const tambahKelurahanButton = document.getElementById('tambah-kelurahan-button');
+        const formTambahKelurahan = document.getElementById('form-tambah-kelurahan');
+        const cancelButton = document.getElementById('cancel-button');
+        const kelurahanTableBody = document.getElementById('kelurahan-table-body');
+        const kecamatanSelect = document.getElementById('kecamatanId');
+        const searchInput = document.getElementById('search-input');
+        let currentPage = 1;
+        let totalPages = 1;
+
+        // Load Kelurahan function
+        function loadKelurahan(page = 1, search = "") {
+            fetch(`/api/kelurahan/all?page=${page}&size=16&search=${encodeURIComponent(search)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const { data: kelurahanList, totalPages: total, currentPage: current } = data;
+                    totalPages = total;
+                    currentPage = current;
+
+                    kelurahanTableBody.innerHTML = '';  // Clear previous rows
+                    kelurahanList.forEach(kelurahan => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${kelurahan.id}</td>
+                            <td>${kelurahan.namaKelurahan}</td>
+                            <td>
+                                <button class="delete-button" data-id="${kelurahan.id}">Delete</button>
+                            </td>
+                        `;
+                        kelurahanTableBody.appendChild(row);
+                    });
+
+                    updatePagination();
+
+                    // Event listener untuk tombol delete
+                    document.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', () => handleDelete(button.dataset.id));
+                    });
+                })
+                .catch(error => console.error('Error loading Kelurahan:', error));
+        }
+
+        // Function for handling the delete request
+        function handleDelete(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus kelurahan ini?')) {
+                fetch(`/api/kelurahan/${id}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Kelurahan berhasil dihapus');
+                            loadKelurahan(currentPage, searchInput.value);  // Reload data setelah penghapusan
+                        } else {
+                            alert('Gagal menghapus kelurahan');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Gagal menghapus kelurahan:', error);
+                        alert('Terjadi kesalahan dalam menghapus kelurahan');
+                    });
+            }
+        }
+
+        // Update pagination based on current and total pages
+        function updatePagination() {
+            const pageNumbers = document.getElementById('page-numbers');
+            const prevButton = document.getElementById('prev-button');
+            const nextButton = document.getElementById('next-button');
+
+            pageNumbers.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                if (i === currentPage) {
+                    pageButton.disabled = true;
+                }
+                pageButton.addEventListener('click', () => loadKelurahan(i, searchInput.value));
+                pageNumbers.appendChild(pageButton);
+            }
+
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+            prevButton.onclick = () => loadKelurahan(currentPage - 1, searchInput.value);
+            nextButton.onclick = () => loadKelurahan(currentPage + 1, searchInput.value);
+        }
+
+        // Event listener for search input
+        searchInput.addEventListener('input', () => {
+            loadKelurahan(currentPage, searchInput.value);
+        });
+
+        loadKelurahan();  // Initial load of Kelurahan
+    </script>
 </body>
 
 </html>

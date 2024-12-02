@@ -16,7 +16,8 @@
         <nav>
             <ul>
                 <li><a th:href="@{/admin}">Data Pegawai</a></li>
-                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan/Kecamatan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKecamatan}">Data Kecamatan</a></li>
+                <li><a th:href="@{/UI-UX Admin/dataKelurahan}">Data Kelurahan</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataPelanggan}">Data Pelanggan</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataMesin}">Data Mesin Cuci & Tarif</a></li>
                 <li><a th:href="@{/UI-UX Admin/dataTransaksi}">Data Transaksi</a></li>
@@ -70,10 +71,12 @@
                         <th>Merek</th>
                         <th>Kapasitas</th>
                         <th>Tarif</th>
+                        <th>Status</th> <!-- Kolom status dengan tombol -->
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody id="mesin-table-body">
+                    <!-- Mesin yang ditambahkan nanti akan muncul di sini -->
                 </tbody>
             </table>
         </section>
@@ -85,30 +88,38 @@
         const cancelMesinButton = document.getElementById('cancel-mesin-button');
         const mesinTableBody = document.getElementById('mesin-table-body');
 
+        // Menampilkan form tambah mesin
         tambahMesinButton.addEventListener('click', () => {
             formTambahMesin.style.display = 'block';
             tambahMesinButton.style.display = 'none';
         });
 
+        // Membatalkan form tambah mesin
         cancelMesinButton.addEventListener('click', () => {
             formTambahMesin.style.display = 'none';
             tambahMesinButton.style.display = 'block';
         });
 
+        // Fungsi untuk memuat data mesin
         function loadMesin() {
             fetch('/api/mesin/all')
                 .then(response => response.json())
                 .then(mesinList => {
-                    mesinList.sort((a, b) => a.id - b.id); // Sorting berdasarkan ID
+                    mesinTableBody.innerHTML = ''; // Clear tabel sebelum mengisi data baru
 
-                    mesinTableBody.innerHTML = ''; // Clear table body
                     mesinList.forEach(mesin => {
+                        const newStatus = currentStatus === 'Available' ? 'Not Available' : 'Available';
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${mesin.id}</td>
                             <td>${mesin.merek}</td>
                             <td>${mesin.kapasitas}</td>
                             <td>${mesin.tarif}</td>
+                            <td>
+                                <button class="status-button ${statusClass}" data-id="${mesin.id}" data-status="${mesin.status}" onclick="toggleStatus(this)">
+                                    ${mesin.status === 'Available' ? 'Available' : 'Not Available'}
+                                </button>
+                            </td>
                             <td>
                                 <button class="update-button" data-id="${mesin.id}">Update</button>
                                 <button class="delete-button" data-id="${mesin.id}">Delete</button>
@@ -117,99 +128,84 @@
                         mesinTableBody.appendChild(row);
                     });
 
-                    // Tambah event listener untuk update dan delete
-                    const updateButtons = document.querySelectorAll('.update-button');
-                    updateButtons.forEach(button => {
-                        button.addEventListener('click', () => {
-                            const id = button.dataset.id;
-                            handleUpdateMesin(id);
-                        });
-                    });
-
-                    const deleteButtons = document.querySelectorAll('.delete-button');
-                    deleteButtons.forEach(button => {
-                        button.addEventListener('click', () => {
-                            const id = button.dataset.id;
-                            handleDeleteMesin(id);
-                        });
-                    });
+                    // Menambahkan event listener untuk tombol update dan delete
+                    addUpdateDeleteListeners();
                 })
                 .catch(error => {
                     console.error('Gagal memuat data mesin:', error);
                 });
         }
 
+        // Fungsi untuk menambahkan event listener untuk tombol update dan delete
+        function addUpdateDeleteListeners() {
+            const updateButtons = document.querySelectorAll('.update-button');
+            updateButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.dataset.id;
+                    handleUpdateMesin(id);
+                });
+            });
+
+            const deleteButtons = document.querySelectorAll('.delete-button');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const id = button.dataset.id;
+                    handleDeleteMesin(id);
+                });
+            });
+        }
+
+        // Fungsi untuk toggle status
+        function toggleStatus(button) {
+            const id = button.dataset.id;
+            const currentStatus = button.dataset.status;
+            const newStatus = currentStatus === 'Available' ? 'Available' : 'Not Available';
+
+            fetch(`/api/mesin/${id}/status`, {
+                method: 'PATCH',
+                body: JSON.stringify({ status: newStatus }),
+                headers: { 'Content-Type': 'application/json' },
+            })
+                .then(() => {
+                    button.textContent = newStatus;
+                    button.dataset.status = newStatus;
+
+                    if (newStatus === 'Available') {
+                        button.className = 'status-button Available';
+                    } else {
+                        button.className = 'status-button NotAvailable';
+                    }
+                })
+                .catch(error => console.error('Gagal memperbarui status mesin:', error));
+        }
+
+        // Fungsi untuk menangani update mesin
         function handleUpdateMesin(id) {
-            // Ambil data mesin yang akan diupdate
             fetch(`/api/mesin/${id}`)
                 .then(response => response.json())
                 .then(mesin => {
-                    // Isi data mesin ke dalam form update
                     document.getElementById('update-id').value = mesin.id;
                     document.getElementById('update-merek').value = mesin.merek;
                     document.getElementById('update-kapasitas').value = mesin.kapasitas;
                     document.getElementById('update-tarif').value = mesin.tarif;
 
-                    // Tampilkan form update
                     document.getElementById('form-update-mesin').style.display = 'block';
                 })
                 .catch(error => console.error('Gagal memuat data mesin:', error));
         }
 
+        // Fungsi untuk menangani hapus mesin
         function handleDeleteMesin(id) {
-            if (confirm(`Apakah Anda yakin ingin menghapus mesin dengan ID ${id}?`)) {
-                fetch(`/api/mesin/${id}`, {
-                    method: 'DELETE',
-                })
+            if (confirm('Apakah Anda yakin ingin menghapus mesin ini?')) {
+                fetch(`/api/mesin/${id}`, { method: 'DELETE' })
                     .then(() => {
-                        loadMesin();
+                        loadMesin(); // Refresh data mesin setelah dihapus
                     })
-                    .catch(error => {
-                        console.error('Gagal menghapus mesin:', error);
-                    });
+                    .catch(error => console.error('Gagal menghapus mesin:', error));
             }
         }
 
-        document.getElementById('form-mesin').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            fetch('/api/mesin/add', {
-                method: 'POST',
-                body: formData,
-            })
-                .then(() => {
-                    this.reset();
-                    formTambahMesin.style.display = 'none';
-                    tambahMesinButton.style.display = 'block';
-                    loadMesin();
-                })
-                .catch(error => {
-                    console.error('Gagal menambahkan mesin:', error);
-                });
-        });
-
-        // Handle submit form update
-        document.getElementById('form-update').addEventListener('submit', function (event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const id = formData.get('id');
-
-            fetch(`/api/mesin/${id}`, {
-                method: 'PUT',
-                body: formData,
-            })
-                .then(() => {
-                    document.getElementById('form-update-mesin').style.display = 'none';
-                    loadMesin();
-                })
-                .catch(error => console.error('Gagal memperbarui mesin:', error));
-        });
-
-        // Handle cancel update
-        document.getElementById('cancel-update-button').addEventListener('click', () => {
-            document.getElementById('form-update-mesin').style.display = 'none';
-        });
-
+        // Memuat data mesin saat halaman pertama kali dimuat
         loadMesin();
     </script>
 </body>

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class KecamatanData {
+public class KelurahanData {
     private int id;
-    private String namaKecamatan;
+    private String namaKelurahan;
 }

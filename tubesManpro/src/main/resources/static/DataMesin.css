@@ -68,8 +68,8 @@
 .masukan {
     display: grid;
     grid-template-columns: 200px 300px;
-    justify-content: center;   
-    row-gap: 5px;  
+    justify-content: center;
+    row-gap: 5px;
     align-items: center;
 }
 
@@ -142,4 +142,16 @@ div :only-of-type input {
 
 #form-update-mesin #cancel-update-button:hover {
     background-color: #c82333;
+}
+
+.status-button.Available {
+    background-color: #0056b3;
+    /* Warna biru untuk Available */
+    color: white;
+}
+
+.status-button.NotAvailable {
+    background-color: red;
+    /* Warna merah untuk Not Available */
+    color: white;
 }
