@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.example.tubesManpro.Admin.Mesin.MesinData;
-
 @Repository
 public class TransaksiRepository {
     @Autowired
@@ -18,7 +16,7 @@ public class TransaksiRepository {
     //mendapatkan semua data transaksi
     public List<TransaksiData> findAll(){
         String sql = "SELECT * FROM transaksi";
-        return jdbcTemplate.query(sql, this::mapRowToTransaksi);
+        return jdbcTemplate.query(sql, this::mapRowTransaksi);
     }
 
     //menambahkan data transaksi
@@ -40,17 +38,26 @@ public class TransaksiRepository {
         jdbcTemplate.update(sql, id);
     }
 
+    public List<String> findAllMerek() {
+        String sql = "SELECT DISTINCT merek FROM mesin";
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    public List<String> findAllPelanggan() {
+        String sql = "SELECT nama FROM pelanggan";
+        return jdbcTemplate.queryForList(sql, String.class);
+    }
+
     // Mapping ResultSet ke TransaksiData
     private TransaksiData mapRowTransaksi(ResultSet resultSet, int rowNum) throws SQLException {
         return new TransaksiData(
+                resultSet.getInt("id"),
                 resultSet.getString("nama"),
                 resultSet.getString("merek"),
-                resultSet.getLocalDate("tanggal"),
+                resultSet.getDate("tanggal"),
                 resultSet.getInt("waktuPakai"),
-                resultSet.getLocalTime("jamMulai"),
-                resultSet.getLocalTime("jamSelesai"),
+                resultSet.getTime("jamMulai"),
+                resultSet.getTime("jamSelesai"),
                 resultSet.getInt("tarif"));
     }
-
-
 }

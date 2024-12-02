@@ -37,25 +37,23 @@
             <button id="tambah-pelanggan-button" type="button">Tambah Pelanggan</button>
             <div id="form-tambah-pelanggan" style="display: none;">
                 <h3>Form Tambah Pelanggan</h3>
-                <form id="form-pelanggan">
-                    <div class="masukan">
-                        <label for="nama">Nama</label>
-                        <input type="text" id="nama" name="nama" required>
-                        <label for="telepon">No. Telepon</label>
-                        <input type="text" id="telepon" name="telepon" required>
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" required>
-                        <label for="kecamatan">Kecamatan</label>
-                        <select id="kecamatan" name="kecamatan" required>
-                            <option value="" disabled selected>Pilih Kecamatan</option>
-                        </select>
-                        <label for="kelurahan">Kelurahan:</label>
-                        <select id="kelurahan" name="kelurahan" required>
-                            <option value="" disabled selected>Pilih Kelurahan</option>
-                        </select>
-                        <div id="kelurahan-warning" style="color: red; display: none;">
-                            Kelurahan belum tersedia. Harap tambahkan data kelurahan terlebih dahulu.
-                        </div>
+                <form id="form-pelanggan" method="POST" action="/api/pelanggan/add">
+                    <label for="nama">Nama</label>
+                    <input type="text" id="nama" name="nama" required>
+                    <label for="telepon">No. Telepon</label>
+                    <input type="text" id="telepon" name="telepon" required>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="kecamatan">Kecamatan</label>
+                    <select id="kecamatan" name="kecamatan" required>
+                        <option value="" disabled selected>Pilih Kecamatan</option>
+                    </select>
+                    <label for="kelurahan">Kelurahan:</label>
+                    <select id="kelurahan" name="kelurahan" required>
+                        <option value="" disabled selected>Pilih Kelurahan</option>
+                    </select>
+                    <div id="kelurahan-warning" style="color: red; display: none;">
+                        Kelurahan belum tersedia. Harap tambahkan data kelurahan terlebih dahulu.
                     </div>
                     <button type="submit">Simpan</button>
                     <button type="button" id="cancel-pelanggan-button">Batal</button>
@@ -149,6 +147,87 @@
                 loadKelurahan(kecamatan);
             }
         });
+
+        document.getElementById('form-pelanggan').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah reload halaman
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+
+            fetch('/api/pelanggan/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nama: formData.get('nama'),
+                    telepon: formData.get('telepon'),
+                    email: formData.get('email'),
+                    kecamatan: formData.get('kecamatan'),
+                    kelurahan: formData.get('kelurahan')
+                }),
+            })
+            .then(response => response.json())
+            .then(result => {
+                alert(result.message); // Tampilkan pesan sukses
+                loadPelangganTable(); // Perbarui tabel
+                this.reset(); // Reset form
+                document.getElementById('form-tambah-pelanggan').style.display = 'none';
+                document.getElementById('tambah-pelanggan-button').style.display = 'block';
+            })
+            .catch(error => console.error('Gagal menyimpan data:', error));
+        });
+
+        function loadPelangganTable() {
+            fetch('/api/pelanggan/all')
+                .then(response => response.json())
+                .then(data => {
+                    const table = document.querySelector('table');
+                    const rows = data.map(pelanggan => `
+                        <tr>
+                            <td>${pelanggan.id}</td>
+                            <td>${pelanggan.nama}</td>
+                            <td>${pelanggan.telepon}</td>
+                            <td>${pelanggan.email}</td>
+                            <td>${pelanggan.kecamatan}</td>
+                            <td>${pelanggan.kelurahan}</td>
+                            <td>
+                                <button onclick="deletePelanggan(${pelanggan.id})">Hapus</button>
+                                <button onclick="editPelanggan(${pelanggan.id})">Edit</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                    table.innerHTML = `
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>No. Telepon</th>
+                            <th>Email</th>
+                            <th>Kecamatan</th>
+                            <th>Kelurahan</th>
+                            <th>Aksi</th>
+                        </tr>
+                        ${rows}
+                    `;
+                })
+                .catch(error => console.error('Gagal memuat data pelanggan:', error));
+        }
+
+        function deletePelanggan(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus pelanggan ini?')) {
+                fetch(`/api/pelanggan/${id}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(result => {
+                        alert(result.message);
+                        loadPelangganTable(); // Perbarui tabel
+                    })
+                    .catch(error => console.error('Gagal menghapus data:', error));
+            }
+        }
+
+        // Panggil fungsi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', loadPelangganTable);
+
 
         // Panggil fungsi loadKecamatan saat halaman dimuat
         document.addEventListener('DOMContentLoaded', loadKecamatan);

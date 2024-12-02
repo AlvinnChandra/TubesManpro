@@ -105,46 +105,39 @@
             function loadTransaksi() {
                 fetch('/api/transaksi/all')
                     .then(response => response.json())
-                    .then(mesinList => {
-                        mesinList.sort((a, b) => a.id - b.id); // Sorting berdasarkan ID
-
-                        mesinTableBody.innerHTML = ''; // Clear table body
-                        mesinList.forEach(mesin => {
+                    .then(transaksiList => {
+                        transaksiTableBody.innerHTML = ''; // Bersihkan tabel sebelum mengisi ulang
+                        transaksiList.forEach(transaksi => {
                             const row = document.createElement('tr');
                             row.innerHTML = `
-                                <td>${mesin.id}</td>
-                                <td>${mesin.merek}</td>
-                                <td>${mesin.kapasitas}</td>
-                                <td>${mesin.tarif}</td>
+                                <td>${transaksi.id}</td>
+                                <td>${transaksi.nama}</td>
+                                <td>${transaksi.merek}</td>
+                                <td>${transaksi.tanggal}</td>
+                                <td>${transaksi.waktuPakai}</td>
+                                <td>${transaksi.jamMulai}</td>
+                                <td>${transaksi.jamSelesai}</td>
+                                <td>${transaksi.tarif}</td>
                                 <td>
-                                    <button class="update-button" data-id="${mesin.id}">Update</button>
-                                    <button class="delete-button" data-id="${mesin.id}">Delete</button>
+                                    <button class="update-button" data-id="${transaksi.id}">Update</button>
+                                    <button class="delete-button" data-id="${transaksi.id}">Delete</button>
                                 </td>
                             `;
-                            mesinTableBody.appendChild(row);
+                            transaksiTableBody.appendChild(row);
                         });
 
-                        // Tambah event listener untuk update dan delete
-                        const updateButtons = document.querySelectorAll('.update-button');
-                        updateButtons.forEach(button => {
-                            button.addEventListener('click', () => {
-                                const id = button.dataset.id;
-                                handleUpdateMesin(id);
-                            });
-                        });
-
-                        const deleteButtons = document.querySelectorAll('.delete-button');
-                        deleteButtons.forEach(button => {
-                            button.addEventListener('click', () => {
-                                const id = button.dataset.id;
-                                handleDeleteMesin(id);
-                            });
-                        });
+                        // Tambah event listener untuk tombol Update dan Delete jika diperlukan
                     })
                     .catch(error => {
-                        console.error('Gagal memuat data mesin:', error);
+                        console.error('Gagal memuat data transaksi:', error);
                     });
             }
+
+            // Panggil fungsi ini setelah halaman dimuat
+            document.addEventListener('DOMContentLoaded', () => {
+                loadTransaksi();
+            });
+
 
             function handleUpdateMesin(id) {
                 // Ambil data mesin yang akan diupdate
@@ -181,7 +174,7 @@
                 const merekDropdown = document.getElementById('merek');
 
                 function loadMerekDropdown() {
-                    fetch('/api/mesin/list')
+                    fetch('/api/transaksi/list')
                         .then(response => response.json())
                         .then(merekList => {
                             // Bersihkan dropdown sebelum menambahkan data
@@ -190,8 +183,8 @@
                             // Tambahkan opsi untuk setiap merek
                             merekList.forEach(merek => {
                                 const option = document.createElement('option');
-                                option.value = mesin.id;
-                                option.textContent = mesin.merek;
+                                option.value = merek;
+                                option.textContent = merek;
                                 merekDropdown.appendChild(option);
                             });
                         })
@@ -201,6 +194,81 @@
                 // Panggil fungsi untuk mengisi dropdown
                 loadMerekDropdown();
             });
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const pelangganDropdown = document.getElementById('pelanggan');
+
+                function loadPelangganDropdown() {
+                    fetch('/api/transaksi/pelanggan')
+                        .then(response => response.json())
+                        .then(pelangganList => {
+                            // Bersihkan dropdown sebelum menambahkan data
+                            pelangganDropdown.innerHTML = '<option value="" disabled selected>Pilih Pelanggan</option>';
+                            
+                            // Tambahkan opsi untuk setiap nama pelanggan
+                            pelangganList.forEach(pelanggan => {
+                                const option = document.createElement('option');
+                                option.value = pelanggan;
+                                option.textContent = pelanggan;
+                                pelangganDropdown.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error('Gagal memuat data pelanggan:', error));
+                }
+
+                // Panggil fungsi untuk mengisi dropdown
+                loadPelangganDropdown();
+            });
+
+            const formTransaksi = document.getElementById('form-transaksi');
+
+            formTransaksi.addEventListener('submit', (event) => {
+                event.preventDefault(); // Mencegah reload halaman
+
+                const formData = new FormData(formTransaksi);
+
+                // Buat objek JSON dari form data
+                const transaksiData = {
+                    nama: formData.get('pelanggan'),
+                    merek: formData.get('merek'),
+                    tanggal: formData.get('tanggal'),
+                    waktuPakai: parseInt(formData.get('lama')),
+                    jamMulai: formData.get('jam_mulai'),
+                    jamSelesai: formData.get('jam_selesai'),
+                    tarif: parseInt(formData.get('tarif'))
+                };
+
+                console.log('Data transaksi yang dikirim:', transaksiData);
+
+                // Kirim data ke server
+                fetch('/api/transaksi/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transaksiData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Gagal menyimpan transaksi');
+                    }
+                    return response.text();
+                })
+                .then(message => {
+                    alert(message);
+                    formTransaksi.reset(); // Reset form
+                    loadTransaksi(); // Refresh tabel transaksi
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert('Terjadi kesalahan: ' + error.message);
+                });
+
+                // Sembunyikan form
+                formTambahTransaksi.style.display = 'none';
+                tambahTransaksiButton.style.display = 'block';
+            });
+
         </script>
     </div>
 
