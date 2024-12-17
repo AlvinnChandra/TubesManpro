@@ -37,7 +37,7 @@
             <button id="tambah-transaksi-button" type="button">Tambah Transaksi</button>
             <div id="form-tambah-transaksi" style="display: none;">
                 <h3>Form Tambah Transaksi</h3>
-                <form id="form-transaksi">
+                <form id="form-transaksi" method="post" action="/api/transaksi/add">
                     <div class="masukan">
                         <label for="pelanggan">Nama Pelanggan</label>
                         <select id="pelanggan" name="pelanggan" required>
@@ -57,7 +57,7 @@
                         <label for="jam_selesai">Jam Selesai</label>
                         <input type="time" id="jam_selesai" name="jam_selesai" required>
                         <label for="tarif">Tarif</label>
-                        <input type="number" id="tarif" name="tarif" required min="0">
+                        <input type="number" id="tarif" name="tarif" readonly>
                     </div>
                     <button type="submit">Simpan</button>
                     <button type="button" id="cancel-transaksi-button">Batal</button>
@@ -154,11 +154,6 @@
                 tambahTransaksiButton.style.display = 'none';
             });
 
-            cancelTransaksiButton.addEventListener('click', () => {
-                formTambahTransaksi.style.display = 'none';
-                tambahTransaksiButton.style.display = 'block';
-            });
-
             function loadTransaksi() {
                 fetch('/api/transaksi/all')
                     .then(response => response.json())
@@ -182,8 +177,6 @@
                             `;
                             transaksiTableBody.appendChild(row);
                         });
-
-                        // Tambah event listener untuk tombol Update dan Delete jika diperlukan
                     })
                     .catch(error => {
                         console.error('Gagal memuat data transaksi:', error);
@@ -194,7 +187,6 @@
             document.addEventListener('DOMContentLoaded', () => {
                 loadTransaksi();
             });
-
 
             function handleUpdateMesin(id) {
                 // Ambil data mesin yang akan diupdate
@@ -304,13 +296,17 @@
                     body: JSON.stringify(transaksiData)
                 })
                 .then(response => {
+                    console.log(response);
                     if (!response.ok) {
-                        throw new Error('Gagal menyimpan transaksi');
+                        return response.text().then(text => { 
+                            throw new Error(text); 
+                        });
                     }
                     return response.text();
                 })
                 .then(message => {
                     alert(message);
+                    console.log("Tarif yang dikirim:", transaksiData.tarif);
                     formTransaksi.reset(); // Reset form
                     loadTransaksi(); // Refresh tabel transaksi
                 })
@@ -322,6 +318,43 @@
                 // Sembunyikan form
                 formTambahTransaksi.style.display = 'none';
                 tambahTransaksiButton.style.display = 'block';
+            });
+
+            document.addEventListener("DOMContentLoaded", () => {
+                const merekDropdown = document.getElementById('merek');
+                const inputLama = document.getElementById('lama');
+                const tarifInput = document.getElementById('tarif'); // Ganti tarif-display dengan tarif
+
+                let tarifPer15Menit = 0;
+
+                // Fungsi untuk memuat tarif berdasarkan merek
+                function loadTarifForMerek(merek) {
+                    fetch(`/api/transaksi/tarif?merek=${encodeURIComponent(merek)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            tarifPer15Menit = data.tarif; // Tarif per 15 menit
+                            updateTarif(); // Hitung tarif total berdasarkan lama waktu pemakaian
+                        })
+                        .catch(error => console.error('Gagal memuat tarif mesin:', error));
+                }
+
+                // Event listener ketika merek mesin dipilih
+                merekDropdown.addEventListener('change', () => {
+                    const selectedMerek = merekDropdown.value;
+                    if (selectedMerek) {
+                        loadTarifForMerek(selectedMerek);
+                    }
+                });
+
+                // Event listener untuk update tarif jika lama waktu berubah
+                inputLama.addEventListener('input', updateTarif);
+
+                // Fungsi untuk menghitung tarif total
+                function updateTarif() {
+                    const lamaWaktu = parseInt(inputLama.value, 10) || 0; // Lama waktu dalam menit
+                    const tarifTotal = Math.ceil(lamaWaktu / 15) * tarifPer15Menit; // Hitung tarif total
+                    tarifInput.value = tarifTotal; // Tampilkan tarif di input field
+                }
             });
 
         </script>
