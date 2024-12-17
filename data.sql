@@ -19,7 +19,8 @@ CREATE TABLE mesin (
     id SERIAL PRIMARY KEY,
     merek VARCHAR(255) UNIQUE NOT NULL,
     kapasitas INT NOT NULL,
-    tarif INT NOT NULL
+    tarif INT NOT NULL,
+    status VARCHAR(100) DEFAULT 'available'
 );
 
 INSERT INTO mesin (merek, kapasitas, tarif) VALUES ('LG', '20', '15000');

@@ -73,28 +73,3 @@ div :only-of-type input {
     grid-column: 2;
     margin-right: 75px;
 }
-
-#tombolFilter {
-    display: grid;
-    grid-template-columns: 20% 20% 30% 15% 15%;
-    grid-template-rows: auto;
-
-}
-
-#most-ordered-button {
-    grid-column: 4;
-    grid-row: 1;
-    width: 150px;
-}
-
-#least-ordered-button {
-    grid-column: 5;
-    grid-row: 1;
-    width: 150px;
-}
-
-#filter-button {
-    grid-column: 1;
-    grid-row: 1;
-    width: 150px;
-}

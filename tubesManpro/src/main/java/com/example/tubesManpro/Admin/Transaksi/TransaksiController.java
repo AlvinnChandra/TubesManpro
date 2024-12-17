@@ -46,7 +46,8 @@ public class TransaksiController {
             LocalTime jamSelesai = transaksi.getJamSelesai();
             long delayInMillis = calculateDelayInMillis(jamSelesai);
 
-            // Misalnya menggunakan ScheduledExecutorService untuk menjadwalkan perubahan status setelah transaksi selesai
+            // Misalnya menggunakan ScheduledExecutorService untuk menjadwalkan perubahan
+            // status setelah transaksi selesai
             ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
             scheduler.schedule(() -> {
                 transaksiRepository.updateStatusMesinToAvailable(transaksi.getMerek());
@@ -93,5 +94,20 @@ public class TransaksiController {
         LocalTime now = LocalTime.now();
         long delayInMillis = java.time.Duration.between(now, jamSelesai).toMillis();
         return delayInMillis;
+    }
+
+    // Update Transaksi
+    @PostMapping("/update/{id}")
+    public ResponseEntity<String> updateTransaksi(@PathVariable int id, @RequestBody TransaksiData transaksi) {
+        transaksi.setId(id);
+        transaksiRepository.updateTransaksi(transaksi);
+        return ResponseEntity.ok("Transaksi berhasil diperbarui");
+    }
+
+    // Delete Transaksi
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteTransaksi(@PathVariable int id) {
+        transaksiRepository.deleteTransaksi(id);
+        return ResponseEntity.ok("Transaksi berhasil dihapus");
     }
 }
