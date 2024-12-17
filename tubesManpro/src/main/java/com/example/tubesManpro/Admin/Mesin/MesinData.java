@@ -10,11 +10,13 @@ public class MesinData {
     private String merek;
     private int kapasitas;
     private int tarif;
+    private String status;
 
-    public MesinData(int id, String merek, int kapasitas, int tarif){
+    public MesinData(int id, String merek, int kapasitas, int tarif, String status) {
         this.id = id;
         this.merek = merek;
         this.kapasitas = kapasitas;
         this.tarif = tarif;
+        this.status = status;
     }
 }

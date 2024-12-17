@@ -16,13 +16,13 @@ public class jdbcMesinRepository {
 
     // Mendapatkan semua data mesin
     public List<MesinData> findAll() {
-        String sql = "SELECT id, merek, kapasitas, tarif FROM mesin";
+        String sql = "SELECT id, merek, kapasitas, tarif, status FROM mesin";
         return jdbcTemplate.query(sql, this::mapRowToMesin);
     }
 
     // Mendapatkan data mesin berdasarkan ID
     public MesinData findById(int id) {
-        String sql = "SELECT id, merek, kapasitas, tarif FROM mesin WHERE id = ?";
+        String sql = "SELECT id, merek, kapasitas, tarif, status FROM mesin WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, this::mapRowToMesin, id);
     }
 
@@ -51,7 +51,8 @@ public class jdbcMesinRepository {
                 resultSet.getInt("id"),
                 resultSet.getString("merek"),
                 resultSet.getInt("kapasitas"),
-                resultSet.getInt("tarif"));
+                resultSet.getInt("tarif"),
+                resultSet.getString("status"));
     }
 
     public List<MesinData> findAllMerek() {

@@ -19,7 +19,8 @@ CREATE TABLE mesin (
     id SERIAL PRIMARY KEY,
     merek VARCHAR(255) UNIQUE NOT NULL,
     kapasitas INT NOT NULL,
-    tarif INT NOT NULL
+    tarif INT NOT NULL,
+    status boolean DEFAULT 'available'
 );
 
 INSERT INTO mesin (merek, kapasitas, tarif) VALUES ('LG', '20', '15000');
@@ -294,7 +295,9 @@ CREATE TABLE pelanggan (
     telepon VARCHAR(15) NOT NULL,
     email VARCHAR(100) NOT NULL,
     kecamatan VARCHAR(100) NOT NULL,
-    kelurahan VARCHAR(100) NOT NULL
+    kelurahan VARCHAR(100) NOT NULL,
+    id_kecamatan INT NOT NULL,
+    id_kelurahan INT NOT NULL
 );
 
 CREATE TABLE transaksi (
@@ -307,5 +310,3 @@ CREATE TABLE transaksi (
 	jamSelesai Time,
     tarif INT NOT NULL
 );
-
-

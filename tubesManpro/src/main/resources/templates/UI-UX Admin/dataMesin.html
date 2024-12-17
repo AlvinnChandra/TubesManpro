@@ -71,6 +71,7 @@
                         <th>Merek</th>
                         <th>Kapasitas</th>
                         <th>Tarif</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -106,15 +107,20 @@
                     mesinList.forEach(mesin => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${mesin.id}</td>
-                            <td>${mesin.merek}</td>
-                            <td>${mesin.kapasitas}</td>
-                            <td>${mesin.tarif}</td>
-                            <td>
-                                <button class="update-button" data-id="${mesin.id}">Update</button>
-                                <button class="delete-button" data-id="${mesin.id}">Delete</button>
-                            </td>
-                        `;
+        <td>${mesin.id}</td>
+        <td>${mesin.merek}</td>
+        <td>${mesin.kapasitas}</td>
+        <td>${mesin.tarif}</td>
+        <td>
+            <button class="status-button" data-id="${mesin.id}" data-status="${mesin.status}">
+                ${mesin.status}
+            </button>
+        </td>
+        <td>
+            <button class="update-button" data-id="${mesin.id}">Update</button>
+            <button class="delete-button" data-id="${mesin.id}">Delete</button>
+        </td>
+    `;
                         mesinTableBody.appendChild(row);
                     });
 
@@ -155,6 +161,17 @@
                     document.getElementById('form-update-mesin').style.display = 'block';
                 })
                 .catch(error => console.error('Gagal memuat data mesin:', error));
+        }
+
+        function handleStatusMesin(id, status) {
+            const newStatus = status === 'Aktif' ? 'Nonaktif' : 'Aktif';
+            fetch(`/api/mesin/status/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            })
+                .then(() => loadMesin())
+                .catch(error => console.error('Gagal mengubah status mesin:', error));
         }
 
         function handleDeleteMesin(id) {

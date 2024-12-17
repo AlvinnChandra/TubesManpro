@@ -31,12 +31,13 @@ public class PelangganRepository {
         // Ambil nama kecamatan berdasarkan ID
         String sqlKecamatan = "SELECT nama_kecamatan FROM kecamatan WHERE id = ?";
         String sqlKelurahan = "SELECT nama_kelurahan FROM kelurahan WHERE id = ?";
-    
+
         String namaKecamatan = jdbcTemplate.queryForObject(sqlKecamatan, String.class, pelanggan.getIdKecamatan());
         String namaKelurahan = jdbcTemplate.queryForObject(sqlKelurahan, String.class, pelanggan.getIdKelurahan());
-    
+
         // Simpan data pelanggan
-        String sql = "INSERT INTO pelanggan (nama, telepon, email, id_kecamatan, id_kelurahan, kecamatan, kelurahan) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO pelanggan (nama, telepon, email, id_kecamatan, id_kelurahan, kecamatan, kelurahan) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, pelanggan.getNama(), pelanggan.getTelepon(), pelanggan.getEmail(),
                 pelanggan.getIdKecamatan(), pelanggan.getIdKelurahan(), namaKecamatan, namaKelurahan);
     }
@@ -45,16 +46,16 @@ public class PelangganRepository {
         // Ambil nama kecamatan dan kelurahan berdasarkan ID
         String sqlKecamatan = "SELECT nama_kecamatan FROM kecamatan WHERE id = ?";
         String sqlKelurahan = "SELECT nama_kelurahan FROM kelurahan WHERE id = ?";
-    
+
         String namaKecamatan = jdbcTemplate.queryForObject(sqlKecamatan, String.class, pelanggan.getIdKecamatan());
         String namaKelurahan = jdbcTemplate.queryForObject(sqlKelurahan, String.class, pelanggan.getIdKelurahan());
-    
+
         // Update data pelanggan
         String sql = "UPDATE pelanggan SET nama = ?, telepon = ?, email = ?, id_kecamatan = ?, id_kelurahan = ?, kecamatan = ?, kelurahan = ? WHERE id = ?";
         jdbcTemplate.update(sql, pelanggan.getNama(), pelanggan.getTelepon(), pelanggan.getEmail(),
-                pelanggan.getIdKecamatan(), pelanggan.getIdKelurahan(), namaKecamatan, namaKelurahan, pelanggan.getId());
+                pelanggan.getIdKecamatan(), pelanggan.getIdKelurahan(), namaKecamatan, namaKelurahan,
+                pelanggan.getId());
     }
-    
 
     public void deleteById(int id) {
         String sql = "DELETE FROM pelanggan WHERE id = ?";
@@ -72,8 +73,7 @@ public class PelangganRepository {
                     rs.getString("kecamatan"),
                     rs.getString("kelurahan"),
                     rs.getInt("id_kecamatan"),
-                    rs.getInt("id_kelurahan")
-            );
+                    rs.getInt("id_kelurahan"));
         }
     }
 }

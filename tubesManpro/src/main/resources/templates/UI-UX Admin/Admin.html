@@ -102,9 +102,9 @@
             fetch('/api/pegawai/all')
                 .then(response => response.json())
                 .then(pegawaiList => {
-                    pegawaiList.sort((a, b) => a.id - b.id); // Sorting berdasarkan ID
+                    pegawaiList.sort((a, b) => a.id - b.id);
 
-                    pegawaiTableBody.innerHTML = ''; // Bersihkan tabel sebelumnya
+                    pegawaiTableBody.innerHTML = '';
 
                     pegawaiList.forEach(pegawai => {
                         const row = document.createElement('tr');
