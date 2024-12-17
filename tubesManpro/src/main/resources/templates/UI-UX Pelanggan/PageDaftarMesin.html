@@ -1,5 +1,3 @@
-<!-- Buatkan UI/UX Untuk Fitur Pelanggan dan tambahkan halaman lain jika diperlukan -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,6 +8,26 @@
     <link rel="stylesheet" href="/stylePelanggan.css">
     <link rel="stylesheet" href="/daftar.css">
     <script defer src="script.js"></script>
+    <style>
+        /* Tambahkan aturan warna langsung di sini */
+        .status {
+            font-weight: bold;
+        }
+        .status.available {
+            background-color: blue;
+            border-radius: 5px;
+            padding: 5px;
+            color: white;
+            margin: 2px;
+        }
+        .status.unavailable {
+            background-color: red;
+            border-radius: 5px;
+            padding: 5px;
+            color: white;
+            margin: 2px;
+        }
+    </style>
 </head>
 
 <body>
@@ -52,9 +70,18 @@
                             <td>${ViewPelanggan.merek}</td>
                             <td>${ViewPelanggan.kapasitas}</td>
                             <td>${ViewPelanggan.tarif}</td>
-                            <td>${ViewPelanggan.status}</td>
+                            <td><span class="status">${ViewPelanggan.status}</span></td>
                         `;
-                        mesinTableBody.appendChild(row);
+
+                        // Tambahkan kelas sesuai dengan status
+                        const statusCell = row.querySelector('.status');
+                        if (ViewPelanggan.status.toLowerCase() === 'available') {
+                            statusCell.classList.add('available');
+                        } else if (ViewPelanggan.status.toLowerCase() === 'unavailable') {
+                            statusCell.classList.add('unavailable');
+                        }
+
+                        pelangganTableBody.appendChild(row);
                     });
                 })
                 .catch(error => {
@@ -63,7 +90,6 @@
         }
 
         loadMesin();
-
     </script>
 </body>
 

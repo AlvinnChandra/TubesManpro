@@ -83,6 +83,10 @@ table th {
     color: #fff;
 }
 
+table td {
+    text-align: center;
+}
+
 button {
     background-color: #007bff;
     color: #fff;
