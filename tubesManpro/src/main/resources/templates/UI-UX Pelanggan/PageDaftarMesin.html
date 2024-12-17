@@ -22,123 +22,48 @@
             <h2>Daftar Mesin</h2>
             <p>Berikut daftar mesin cuci yang tersedia:</p>
             <table>
-                <tr>
-                    <th>Merek</th>
-                    <th>Kapasitas (dalam kg)</th>
-                    <th>Tarif per 15 menit</th>
-                    <th>Status</th>
-                </tr>
-
-                <tr>
-                    <td>LG</td>
-                    <td>20</td>
-                    <td>15.000</td>
-                    <td>
-                        <button type="button" class="available">Available</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Panasonic</td>
-                    <td>10</td>
-                    <td>10.000</td>
-                    <td>
-                        <button type="button" class="available">Available</button>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>Hisense</td>
-                    <td>12</td>
-                    <td>11.000</td>
-                    <td>
-                        <button type="button" class="unavailable" disabled>Unavailable</button>
-                    </td>
-                </tr>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Merek</th>
+                        <th>Kapasitas</th>
+                        <th>Tarif Per 15 Menit</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="pelanggan-table-body"></tbody>
             </table>
-
-            <div id="form-sewa-mesin" style="display: none;">
-                <h3>Masukkan waktu sewa mesin cuci</h3>
-                <h5>Mohon untuk memasukkan waktu dengan kelipatan 15 menit!</h5>
-                <form id="sewa">
-                    <div>
-                        <label for="waktu-sewa">Waktu Sewa (menit):</label>
-                        <input type="number" name="waktu" id="waktu" min="15" step="15" required>
-                    </div>
-                </form>
-                <h3>Total Sewa: <span id="total-sewa">0</span></h3>
-                <button id="buttonSewa">Sewa</button>
-
-                <div id="pop-up-sewa" style="display: none;">
-                    <h2>Apakah anda setuju ingin menyewa mesin cuci ini?</h2>
-                    <button id="setuju">Ya</button>
-                    <button id="batal">Batalkan</button>
-                </div>
-            </div>
         </section>
     </div>
-
     <script>
-        const tombolStatus = document.querySelectorAll(".available");
-        const formSewa = document.getElementById("form-sewa-mesin");
-        const waktuInput = document.getElementById("waktu");
-        const totalSewaEl = document.getElementById("total-sewa");
-        const buttonSewa = document.getElementById("buttonSewa");
+        const pelangganTableBody = document.getElementById('pelanggan-table-body');
 
-        const popUp = document.getElementById("pop-up-sewa");
-        const tombolSetuju = document.getElementById("setuju");
-        const tombolBatal = document.getElementById("batal");
+        function loadMesin() {
+            fetch('/api/view/all')
+                .then(response => response.json())
+                .then(viewList => {
+                    viewList.sort((a, b) => a.id - b.id); // Sorting berdasarkan ID
 
-        let selectedButton = null;
-        let hargaPer15Menit = 0;
+                    pelangganTableBody.innerHTML = ''; // Clear table body
+                    viewList.forEach(ViewPelanggan => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${ViewPelanggan.id}</td>
+                            <td>${ViewPelanggan.merek}</td>
+                            <td>${ViewPelanggan.kapasitas}</td>
+                            <td>${ViewPelanggan.tarif}</td>
+                            <td>${ViewPelanggan.status}</td>
+                        `;
+                        mesinTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Gagal memuat data mesin:', error);
+                });
+        }
 
-        tombolStatus.forEach(button => {
-            button.addEventListener('click', (event) => {
-                const row = event.target.closest('tr');
-                const hargaText = row.cells[2].textContent;
-                hargaPer15Menit = parseInt(hargaText.replace('.', ''));
+        loadMesin();
 
-                formSewa.style.display = 'block';
-                selectedButton = button;
-            });
-        });
-
-        waktuInput.addEventListener('input', () => {
-            const waktu = parseInt(waktuInput.value) || 0;
-            const totalSewa = (waktu / 15) * hargaPer15Menit;
-            totalSewaEl.textContent = totalSewa.toLocaleString();
-        });
-
-        buttonSewa.addEventListener('click', () => {
-            const waktu = parseInt(waktuInput.value);
-            if (waktu > 0 && waktu % 15 === 0) {
-                popUp.style.display = 'block';
-            } else {
-                alert("Mohon masukkan waktu sewa dalam kelipatan 15 menit!");
-            }
-        });
-
-        tombolSetuju.addEventListener('click', () => {
-            if (selectedButton) {
-                selectedButton.textContent = "Unavailable";
-                selectedButton.classList.remove("available");
-                selectedButton.classList.add("unavailable");
-                selectedButton.disabled = true;
-                selectedButton = null;
-            }
-            popUp.style.display = 'none';
-            formSewa.style.display = 'none';
-            totalSewaEl.textContent = '0';
-            waktuInput.value = '';
-        });
-
-        tombolBatal.addEventListener('click', () => {
-            popUp.style.display = 'none';
-            formSewa.style.display = 'none';
-            totalSewaEl.textContent = '0';
-            waktuInput.value = '';
-            selectedButton = null;
-        });
     </script>
 </body>
 
