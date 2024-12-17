@@ -294,7 +294,9 @@ CREATE TABLE pelanggan (
     telepon VARCHAR(15) NOT NULL,
     email VARCHAR(100) NOT NULL,
     kecamatan VARCHAR(100) NOT NULL,
-    kelurahan VARCHAR(100) NOT NULL
+    kelurahan VARCHAR(100) NOT NULL,
+    id_kecamatan INT NOT NULL,
+    id_kelurahan INT NOT NULL
 );
 
 CREATE TABLE transaksi (
