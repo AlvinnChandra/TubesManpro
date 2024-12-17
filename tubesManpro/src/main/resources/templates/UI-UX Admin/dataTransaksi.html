@@ -115,8 +115,8 @@
                 inputJamMulai.value = `${hours}:${minutes}`;
 
                 // Set step input lama waktu pemakaian ke 15 menit
-                inputLama.setAttribute('step', '15');
-                inputLama.value = 15; // Default lama waktu pemakaian
+                inputLama.setAttribute('step', '1');
+                inputLama.value = 1; // Default lama waktu pemakaian
 
                 // Hitung dan set waktu selesai berdasarkan default lama waktu pemakaian
                 updateJamSelesai();
@@ -352,8 +352,8 @@
                 // Fungsi untuk menghitung tarif total
                 function updateTarif() {
                     const lamaWaktu = parseInt(inputLama.value, 10) || 0; // Lama waktu dalam menit
-                    const tarifTotal = Math.ceil(lamaWaktu / 15) * tarifPer15Menit; // Hitung tarif total
-                    tarifInput.value = tarifTotal; // Tampilkan tarif di input field
+                    const tarifTotal = (lamaWaktu / 15) * tarifPer15Menit; // Hitung tarif total
+                    tarifInput.value = tarifTotal.toFixed(2); // Tampilkan tarif di input field
                 }
             });
 

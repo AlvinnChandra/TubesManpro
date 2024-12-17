@@ -33,6 +33,8 @@ public class LoginController {
                 return "UI-UX Admin/Admin";
             } else if ("pemilik".equals(role)) {
                 return "UI-UX Pemilik/LaporanPemilik";
+            } else if("pelanggan".equals(role)){
+                return "UI-UX Pelanggan/PageDaftarMesin";
             }
         } catch (Exception e) {
             model.addAttribute("error", "Nama pengguna atau kata sandi tidak valid");
