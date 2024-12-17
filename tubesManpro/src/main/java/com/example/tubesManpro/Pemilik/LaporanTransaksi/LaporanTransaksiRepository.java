@@ -50,6 +50,32 @@ public class LaporanTransaksiRepository {
                 resultSet.getTime("jamSelesai"),
                 resultSet.getInt("tarif"));
     }
+
+    // Total pendapatan keseluruhan
+    public int findTotalPendapatan() {
+        String sql = "SELECT SUM(tarif) AS total FROM transaksi";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+    // Total pendapatan berdasarkan rentang tanggal
+    public int findTotalPendapatanByFilter(Date dariTanggal, Date sampaiTanggal) {
+        String sql = "SELECT SUM(tarif) AS total FROM transaksi WHERE tanggal BETWEEN ? AND ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, dariTanggal, sampaiTanggal);
+    }
+
+    // Total pendapatan untuk merek terbanyak dipesan
+    public int findTotalPendapatanForMostOrderedBrand() {
+        String sql = "SELECT SUM(tarif) AS total FROM transaksi WHERE merek = (SELECT merek FROM transaksi GROUP BY merek ORDER BY COUNT(*) DESC LIMIT 1)";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+    // Total pendapatan untuk merek paling sedikit dipesan
+    public int findTotalPendapatanForLeastOrderedBrand() {
+        String sql = "SELECT SUM(tarif) AS total FROM transaksi WHERE merek = (SELECT merek FROM transaksi GROUP BY merek ORDER BY COUNT(*) ASC LIMIT 1)";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+
 }
 
 

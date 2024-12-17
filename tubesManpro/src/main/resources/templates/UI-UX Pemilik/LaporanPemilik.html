@@ -27,8 +27,8 @@
         <section id="laporan">
             <h2>Laporan Transaksi</h2>
             <div id="tombolFilter">
-                <button id="most-ordered-button" type="button">Merek Terbanyak</button>
-                <button id="least-ordered-button" type="button">Merek Terdikit</button>
+                <button id="most-ordered-button" type="button">Terbanyak</button>
+                <button id="least-ordered-button" type="button">Terdikit</button>
                 <button id="filter-button" type="button">Filter Tanggal</button>
             </div>
             <div id="filterTgl" style="display: none;">
@@ -54,12 +54,287 @@
                         <th>Lama waktu pemakaian (dalam menit)</th>
                         <th>Jam Mulai</th>
                         <th>Jam Selesai</th>
-                        <th>Tarif</th>
+                        <th>Pendapatan</th>
                     </tr>
                 </thead>
                 <tbody id="laporan-table-body"></tbody>
             </table>
+            <div id="total-pendapatan-container">
+                <h3>Total Pendapatan: <span id="total-pendapatan">0</span></h3>
+            </div>
         </section>
     </div>
+    <script>
+        function filter(){
+        const filterButton = document.getElementById('filter-button');
+        const filterTgl = document.getElementById('filterTgl');
+        const cancelButton = document.getElementById('cancel-button');
+        const submitButton = document.getElementById('submit-button');
+
+        filterButton.addEventListener('click', () => {
+            filterTgl.style.display = 'block';
+            filterButton.style.display = 'none';
+        });
+
+        cancelButton.addEventListener('click', () => {
+            filterTgl.style.display = 'none';
+            filterButton.style.display = 'block';
+        });
+
+        submitButton.addEventListener('click', () => {
+            filterTgl.style.display = 'none';
+            filterButton.style.display = 'block';
+        });
+    }
+
+    const laporanTableBody = document.getElementById('laporan-table-body');
+    function loadLaporan() {
+        fetch('/api/laporan/all')
+            .then(response => response.json())
+            .then(laporanList => {
+                laporanList.sort((a, b) => a.id - b.id); // Sorting berdasarkan ID
+
+                laporanTableBody.innerHTML = ''; // Clear table body
+                laporanList.forEach(laporan => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${laporan.id}</td>
+                        <td>${laporan.nama}</td>
+                        <td>${laporan.merek}</td>
+                        <td>${laporan.tanggal}</td>
+                        <td>${laporan.waktuPakai}</td>
+                        <td>${laporan.jamMulai}</td>
+                        <td>${laporan.jamSelesai}</td>
+                        <td>${laporan.tarif}</td>
+                    `;
+                    laporanTableBody.appendChild(row);
+                });
+
+            })
+            .catch(error => {
+                console.error('Gagal memuat data mesin:', error);
+            });
+    }
+    document.getElementById('form-filter').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const date1 = document.getElementById('date1').value;
+        const date2 = document.getElementById('date2').value;
+
+        if (!date1 || !date2) {
+            alert('Silakan isi rentang tanggal.');
+            return;
+        }
+
+        fetch(`/api/laporan/filter?dariTanggal=${date1}&sampaiTanggal=${date2}`)
+            .then(response => response.json())
+            .then(laporanList => {
+                laporanTableBody.innerHTML = '';
+                laporanList.forEach(laporan => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${laporan.id}</td>
+                        <td>${laporan.nama}</td>
+                        <td>${laporan.merek}</td>
+                        <td>${laporan.tanggal}</td>
+                        <td>${laporan.waktuPakai}</td>
+                        <td>${laporan.jamMulai}</td>
+                        <td>${laporan.jamSelesai}</td>
+                        <td>${laporan.tarif}</td>
+                    `;
+                    laporanTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Gagal memuat data berdasarkan filter:', error));
+    });
+
+    // Merek terbanyak dipesan
+    document.getElementById('most-ordered-button').addEventListener('click', function () {
+        fetch('/api/laporan/most-ordered-brand')
+            .then(response => response.json())
+            .then(laporanList => {
+                laporanTableBody.innerHTML = '';
+                laporanList.forEach(laporan => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${laporan.id}</td>
+                        <td>${laporan.nama}</td>
+                        <td>${laporan.merek}</td>
+                        <td>${laporan.tanggal}</td>
+                        <td>${laporan.waktuPakai}</td>
+                        <td>${laporan.jamMulai}</td>
+                        <td>${laporan.jamSelesai}</td>
+                        <td>${laporan.tarif}</td>
+                    `;
+                    laporanTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Gagal memuat data merek terbanyak dipesan:', error));
+    });
+
+    // Merek paling sedikit dipesan
+    document.getElementById('least-ordered-button').addEventListener('click', function () {
+        fetch('/api/laporan/least-ordered-brand')
+            .then(response => response.json())
+            .then(laporanList => {
+                laporanTableBody.innerHTML = '';
+                laporanList.forEach(laporan => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${laporan.id}</td>
+                        <td>${laporan.nama}</td>
+                        <td>${laporan.merek}</td>
+                        <td>${laporan.tanggal}</td>
+                        <td>${laporan.waktuPakai}</td>
+                        <td>${laporan.jamMulai}</td>
+                        <td>${laporan.jamSelesai}</td>
+                        <td>${laporan.tarif}</td>
+                    `;
+                    laporanTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Gagal memuat data merek paling sedikit dipesan:', error));
+    });
+
+
+    loadLaporan();
+
+    filter();
+
+    function loadTotalPendapatan(dariTanggal = null, sampaiTanggal = null) {
+        let url = '/api/laporan/total-pendapatan';
+        if (dariTanggal && sampaiTanggal) {
+            url = `/api/laporan/total-pendapatan-filter?dariTanggal=${dariTanggal}&sampaiTanggal=${sampaiTanggal}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(total => {
+                document.getElementById('total-pendapatan').textContent = total;
+            })
+            .catch(error => console.error('Gagal memuat total pendapatan:', error));
+    }
+
+    // Load total pendapatan saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTotalPendapatan();
+    });
+
+    // Panggil fungsi setelah filter diterapkan
+    document.getElementById('form-filter').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const date1 = document.getElementById('date1').value;
+        const date2 = document.getElementById('date2').value;
+
+        if (!date1 || !date2) {
+            alert('Silakan isi rentang tanggal.');
+            return;
+        }
+
+        fetch(`/api/laporan/filter?dariTanggal=${date1}&sampaiTanggal=${date2}`)
+            .then(response => response.json())
+            .then(laporanList => {
+                laporanTableBody.innerHTML = '';
+                laporanList.forEach(laporan => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${laporan.id}</td>
+                        <td>${laporan.nama}</td>
+                        <td>${laporan.merek}</td>
+                        <td>${laporan.tanggal}</td>
+                        <td>${laporan.waktuPakai}</td>
+                        <td>${laporan.jamMulai}</td>
+                        <td>${laporan.jamSelesai}</td>
+                        <td>${laporan.tarif}</td>
+                    `;
+                    laporanTableBody.appendChild(row);
+                });
+
+                // Load total pendapatan dengan filter
+                loadTotalPendapatan(date1, date2);
+            })
+            .catch(error => console.error('Gagal memuat data berdasarkan filter:', error));
+    });
+
+    // Fungsi untuk mengambil total pendapatan berdasarkan merek terbanyak
+    function loadTotalPendapatanMostOrdered() {
+        fetch('/api/laporan/total-pendapatan-most-ordered-brand')
+            .then(response => response.json())
+            .then(total => {
+                document.getElementById('total-pendapatan').textContent = total;
+            })
+            .catch(error => console.error('Gagal memuat total pendapatan merek terbanyak:', error));
+    }
+
+    // Fungsi untuk mengambil total pendapatan berdasarkan merek paling sedikit
+    function loadTotalPendapatanLeastOrdered() {
+        fetch('/api/laporan/total-pendapatan-least-ordered-brand')
+            .then(response => response.json())
+            .then(total => {
+                document.getElementById('total-pendapatan').textContent = total;
+            })
+            .catch(error => console.error('Gagal memuat total pendapatan merek paling sedikit:', error));
+    }
+
+    // Menambahkan listener untuk fitur "Terbanyak"
+    document.getElementById('most-ordered-button').addEventListener('click', function () {
+        fetch('/api/laporan/most-ordered-brand')
+            .then(response => response.json())
+            .then(laporanList => {
+                laporanTableBody.innerHTML = '';
+                laporanList.forEach(laporan => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${laporan.id}</td>
+                        <td>${laporan.nama}</td>
+                        <td>${laporan.merek}</td>
+                        <td>${laporan.tanggal}</td>
+                        <td>${laporan.waktuPakai}</td>
+                        <td>${laporan.jamMulai}</td>
+                        <td>${laporan.jamSelesai}</td>
+                        <td>${laporan.tarif}</td>
+                    `;
+                    laporanTableBody.appendChild(row);
+                });
+                // Load total pendapatan untuk merek terbanyak
+                loadTotalPendapatanMostOrdered();
+            })
+            .catch(error => console.error('Gagal memuat data merek terbanyak dipesan:', error));
+    });
+
+    // Menambahkan listener untuk fitur "Terdikit"
+    document.getElementById('least-ordered-button').addEventListener('click', function () {
+        fetch('/api/laporan/least-ordered-brand')
+            .then(response => response.json())
+            .then(laporanList => {
+                laporanTableBody.innerHTML = '';
+                laporanList.forEach(laporan => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${laporan.id}</td>
+                        <td>${laporan.nama}</td>
+                        <td>${laporan.merek}</td>
+                        <td>${laporan.tanggal}</td>
+                        <td>${laporan.waktuPakai}</td>
+                        <td>${laporan.jamMulai}</td>
+                        <td>${laporan.jamSelesai}</td>
+                        <td>${laporan.tarif}</td>
+                    `;
+                    laporanTableBody.appendChild(row);
+                });
+                // Load total pendapatan untuk merek paling sedikit
+                loadTotalPendapatanLeastOrdered();
+            })
+            .catch(error => console.error('Gagal memuat data merek paling sedikit dipesan:', error));
+    });
+
+    // Load total pendapatan saat halaman dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTotalPendapatan();
+    });
+
+
+    </script>
 </body>
 </html>
