@@ -20,7 +20,7 @@ CREATE TABLE mesin (
     merek VARCHAR(255) UNIQUE NOT NULL,
     kapasitas INT NOT NULL,
     tarif INT NOT NULL,
-    status boolean DEFAULT 'available'
+    status VARCHAR(100) DEFAULT 'available'
 );
 
 INSERT INTO mesin (merek, kapasitas, tarif) VALUES ('LG', '20', '15000');
