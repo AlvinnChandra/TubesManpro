@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -50,6 +49,18 @@ public class TransaksiRepository {
     public List<String> findAllPelanggan() {
         String sql = "SELECT nama FROM pelanggan";
         return jdbcTemplate.queryForList(sql, String.class);
+    }
+
+    // Mengubah status mesin menjadi unavailable
+    public void updateStatusMesinToUnavailable(String merek) {
+        String sql = "UPDATE mesin SET status = 'unavailable' WHERE merek = ?";
+        jdbcTemplate.update(sql, merek);
+    }
+
+    // Mengubah status mesin menjadi available
+    public void updateStatusMesinToAvailable(String merek) {
+        String sql = "UPDATE mesin SET status = 'available' WHERE merek = ?";
+        jdbcTemplate.update(sql, merek);
     }
 
     // Mapping ResultSet ke TransaksiData

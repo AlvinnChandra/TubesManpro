@@ -8,8 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import com.example.tubesManpro.Admin.Mesin.MesinData;
 import com.example.tubesManpro.Admin.Mesin.jdbcMesinRepository;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/transaksi")
@@ -32,7 +36,22 @@ public class TransaksiController {
     @PostMapping("/add")
     public ResponseEntity<String> addTransaksi(@RequestBody TransaksiData transaksi) {
         try {
+            // Tambahkan transaksi ke database
             transaksiRepository.addTransaksi(transaksi);
+
+            // Ubah status mesin menjadi unavailable
+            transaksiRepository.updateStatusMesinToUnavailable(transaksi.getMerek());
+
+            // Jadwalkan update status mesin menjadi available setelah transaksi selesai
+            LocalTime jamSelesai = transaksi.getJamSelesai();
+            long delayInMillis = calculateDelayInMillis(jamSelesai);
+
+            // Misalnya menggunakan ScheduledExecutorService untuk menjadwalkan perubahan status setelah transaksi selesai
+            ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+            scheduler.schedule(() -> {
+                transaksiRepository.updateStatusMesinToAvailable(transaksi.getMerek());
+            }, delayInMillis, TimeUnit.MILLISECONDS);
+
             return ResponseEntity.ok("Transaksi berhasil ditambahkan.");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Gagal menambahkan transaksi: " + e.getMessage());
@@ -67,5 +86,12 @@ public class TransaksiController {
             return ResponseEntity.ok(Map.of("tarif", mesin.getTarif()));
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarif tidak ditemukan");
+    }
+
+    private long calculateDelayInMillis(LocalTime jamSelesai) {
+        // Mengonversi jamSelesai menjadi waktu dalam milidetik dari sekarang
+        LocalTime now = LocalTime.now();
+        long delayInMillis = java.time.Duration.between(now, jamSelesai).toMillis();
+        return delayInMillis;
     }
 }
