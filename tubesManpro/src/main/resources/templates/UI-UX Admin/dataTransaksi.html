@@ -357,6 +357,130 @@
                 }
             });
 
+            document.addEventListener("DOMContentLoaded", () => {
+                const formUpdateTransaksi = document.getElementById('form-update-transaksi');
+                const cancelUpdateButton = document.getElementById('cancel-update-button');
+                const formUpdate = document.getElementById('form-update');
+                const updatePelangganDropdown = document.getElementById('update-pelanggan');
+                const updateMerekDropdown = document.getElementById('update-merek');
+
+                // Fungsi untuk memuat dropdown pelanggan dan merek mesin
+                function loadUpdateDropdowns() {
+                    fetch('/api/transaksi/pelanggan')
+                        .then(response => response.json())
+                        .then(pelangganList => {
+                            pelangganList.forEach(pelanggan => {
+                                const option = document.createElement('option');
+                                option.value = pelanggan;
+                                option.textContent = pelanggan;
+                                updatePelangganDropdown.appendChild(option);
+                            });
+                        });
+
+                    fetch('/api/transaksi/list')
+                        .then(response => response.json())
+                        .then(merekList => {
+                            merekList.forEach(merek => {
+                                const option = document.createElement('option');
+                                option.value = merek;
+                                option.textContent = merek;
+                                updateMerekDropdown.appendChild(option);
+                            });
+                        });
+                }
+
+                // Memuat dropdown ketika halaman dimuat
+                loadUpdateDropdowns();
+
+                // Fungsi untuk menangani Update
+                function handleUpdateTransaksi(id) {
+                    fetch(`/api/transaksi/${id}`)
+                        .then(response => response.json())
+                        .then(transaksi => {
+                            document.getElementById('update-pelanggan').value = transaksi.nama;
+                            document.getElementById('update-merek').value = transaksi.merek;
+                            document.getElementById('update-tanggal').value = transaksi.tanggal;
+                            document.getElementById('update-lama').value = transaksi.waktuPakai;
+                            document.getElementById('update-jam_mulai').value = transaksi.jamMulai;
+                            document.getElementById('update-jam_selesai').value = transaksi.jamSelesai;
+                            document.getElementById('update-tarif').value = transaksi.tarif;
+
+                            formUpdateTransaksi.style.display = 'block';
+                        })
+                        .catch(error => console.error('Gagal memuat data transaksi:', error));
+                }
+
+                // Event listener untuk tombol Update
+                transaksiTableBody.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('update-button')) {
+                        const id = e.target.getAttribute('data-id');
+                        handleUpdateTransaksi(id);
+                    }
+                });
+
+                // Event listener untuk tombol Batal
+                cancelUpdateButton.addEventListener('click', () => {
+                    formUpdateTransaksi.style.display = 'none';
+                });
+
+                // Event listener untuk submit form Update
+                formUpdate.addEventListener('submit', (event) => {
+                    event.preventDefault();
+
+                    const formData = new FormData(formUpdate);
+                    const updatedTransaksi = {
+                        nama: formData.get('pelanggan'),
+                        merek: formData.get('merek'),
+                        tanggal: formData.get('tanggal'),
+                        waktuPakai: parseInt(formData.get('lama')),
+                        jamMulai: formData.get('jam_mulai'),
+                        jamSelesai: formData.get('jam_selesai'),
+                        tarif: parseInt(formData.get('tarif')),
+                    };
+
+                    const transaksiId = document.getElementById('update-id').value;
+
+                    fetch(`/api/transaksi/update/${transaksiId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(updatedTransaksi),
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            alert('Data transaksi berhasil diperbarui');
+                            loadTransaksi();  // Refresh tabel transaksi
+                            formUpdateTransaksi.style.display = 'none';
+                        })
+                        .catch(error => console.error('Gagal memperbarui transaksi:', error));
+                });
+            });
+
+            document.addEventListener("DOMContentLoaded", () => {
+                // Fungsi untuk menangani Delete
+                function handleDeleteTransaksi(id) {
+                    if (confirm(`Apakah Anda yakin ingin menghapus transaksi dengan ID ${id}?`)) {
+                        fetch(`/api/transaksi/delete/${id}`, {
+                            method: 'DELETE',
+                        })
+                            .then(() => {
+                                loadTransaksi();  // Refresh tabel transaksi
+                                alert('Transaksi berhasil dihapus');
+                            })
+                            .catch(error => console.error('Gagal menghapus transaksi:', error));
+                    }
+                }
+
+                // Event listener untuk tombol Delete
+                transaksiTableBody.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-button')) {
+                        const id = e.target.getAttribute('data-id');
+                        handleDeleteTransaksi(id);
+                    }
+                });
+            });
+
         </script>
     </div>
 
