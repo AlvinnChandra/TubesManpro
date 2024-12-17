@@ -92,6 +92,63 @@
             const cancelTransaksiButton = document.getElementById('cancel-transaksi-button');
             const transaksiTableBody = document.getElementById('transaksi-table-body');
 
+            const inputTanggal = document.getElementById('tanggal');
+            const inputJamMulai = document.getElementById('jam_mulai');
+            const inputLama = document.getElementById('lama');
+            const inputJamSelesai = document.getElementById('jam_selesai');
+
+            // Event Listener saat tombol Tambah Transaksi diklik
+            tambahTransaksiButton.addEventListener('click', () => {
+                formTambahTransaksi.style.display = 'block';
+                tambahTransaksiButton.style.display = 'none';
+
+                // Mengatur tanggal dan jam mulai dengan waktu real-time
+                const now = new Date();
+
+                // Format tanggal menjadi YYYY-MM-DD
+                const today = now.toISOString().split('T')[0];
+                inputTanggal.value = today;
+
+                // Format jam menjadi HH:MM
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                inputJamMulai.value = `${hours}:${minutes}`;
+
+                // Set step input lama waktu pemakaian ke 15 menit
+                inputLama.setAttribute('step', '15');
+                inputLama.value = 15; // Default lama waktu pemakaian
+
+                // Hitung dan set waktu selesai berdasarkan default lama waktu pemakaian
+                updateJamSelesai();
+            });
+
+            // Event Listener saat input Lama Waktu Pemakaian atau Jam Mulai berubah
+            inputLama.addEventListener('input', updateJamSelesai);
+            inputJamMulai.addEventListener('input', updateJamSelesai);
+
+            // Fungsi untuk menghitung jam selesai
+            function updateJamSelesai() {
+                const jamMulai = inputJamMulai.value;
+                const lamaWaktu = parseInt(inputLama.value, 10) || 0;
+
+                if (jamMulai && lamaWaktu > 0) {
+                    const [hours, minutes] = jamMulai.split(':').map(Number);
+                    const totalMinutes = hours * 60 + minutes + lamaWaktu;
+
+                    const selesaiHours = Math.floor(totalMinutes / 60) % 24; // Handle overflow ke jam 0-23
+                    const selesaiMinutes = totalMinutes % 60;
+
+                    inputJamSelesai.value = `${String(selesaiHours).padStart(2, '0')}:${String(selesaiMinutes).padStart(2, '0')}`;
+                }
+            }
+
+            // Event Listener saat tombol Batal diklik
+            cancelTransaksiButton.addEventListener('click', () => {
+                formTambahTransaksi.style.display = 'none';
+                tambahTransaksiButton.style.display = 'block';
+                formTransaksi.reset(); // Reset form
+            });
+
             tambahTransaksiButton.addEventListener('click', () => {
                 formTambahTransaksi.style.display = 'block';
                 tambahTransaksiButton.style.display = 'none';
