@@ -28,12 +28,14 @@ public class MesinController {
     // Endpoint untuk menambahkan data mesin baru
     @PostMapping("/add")
     public Map<String, String> addMesin(@RequestParam String merek,
-            @RequestParam int kapasitas,
-            @RequestParam int tarif) {
+                                        @RequestParam int kapasitas,
+                                        @RequestParam int tarif,
+                                        @RequestParam(defaultValue = "available") String status) {
         MesinData mesin = new MesinData();
         mesin.setMerek(merek);
         mesin.setKapasitas(kapasitas);
         mesin.setTarif(tarif);
+        mesin.setStatus(status);
         mesinRepository.addMesin(mesin);
 
         Map<String, String> response = new HashMap<>();
@@ -44,15 +46,16 @@ public class MesinController {
     // Endpoint untuk memperbarui data mesin berdasarkan ID
     @PutMapping("/{id}")
     public Map<String, String> updateMesin(@PathVariable int id,
-            @RequestParam String merek,
-            @RequestParam int kapasitas,
-            @RequestParam int tarif) {
-        
+                                        @RequestParam String merek,
+                                        @RequestParam int kapasitas,
+                                        @RequestParam int tarif,
+                                        @RequestParam String status) {
         MesinData mesin = new MesinData();
         mesin.setId(id);
         mesin.setMerek(merek);
         mesin.setKapasitas(kapasitas);
         mesin.setTarif(tarif);
+        mesin.setStatus(status);
         mesinRepository.updateMesin(mesin);
 
         Map<String, String> response = new HashMap<>();

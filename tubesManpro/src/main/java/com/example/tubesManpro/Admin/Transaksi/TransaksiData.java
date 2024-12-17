@@ -1,7 +1,7 @@
 package com.example.tubesManpro.Admin.Transaksi;
 
 import java.sql.Date;
-import java.sql.Time;
+import java.time.LocalTime;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,11 +14,11 @@ public class TransaksiData {
     private String merek;
     private Date tanggal;
     private int waktuPakai;
-    private Time jamMulai;
-    private Time jamSelesai;
+    private LocalTime jamMulai;
+    private LocalTime jamSelesai;
     private int tarif;
 
-    public TransaksiData(int id, String nama, String merek, Date tanggal, int waktuPakai, Time jamMulai, Time jamSelesai, int tarif){
+    public TransaksiData(int id, String nama, String merek, Date tanggal, int waktuPakai, LocalTime jamMulai, LocalTime jamSelesai, int tarif){
         this.id = id;
         this.nama = nama;
         this.merek = merek;

@@ -1,10 +1,15 @@
 package com.example.tubesManpro.Admin.Transaksi;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.tubesManpro.Admin.Mesin.MesinData;
+import com.example.tubesManpro.Admin.Mesin.jdbcMesinRepository;
+
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/transaksi")
@@ -12,6 +17,9 @@ public class TransaksiController {
 
     @Autowired
     private TransaksiRepository transaksiRepository;
+
+    @Autowired
+    private jdbcMesinRepository jdbcMesinRepository;
 
     // Mendapatkan semua data transaksi
     @GetMapping("/all")
@@ -50,5 +58,14 @@ public class TransaksiController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
+    }
+
+    @GetMapping("/tarif")
+    public ResponseEntity<?> getTarifMesin(@RequestParam String merek) {
+        MesinData mesin = jdbcMesinRepository.findByMerek(merek);
+        if (mesin != null) {
+            return ResponseEntity.ok(Map.of("tarif", mesin.getTarif()));
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tarif tidak ditemukan");
     }
 }
