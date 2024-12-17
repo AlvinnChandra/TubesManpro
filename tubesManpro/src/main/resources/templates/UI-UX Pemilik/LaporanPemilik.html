@@ -26,40 +26,59 @@
         </header>
         <section id="laporan">
             <h2>Laporan Transaksi</h2>
-            <div id="tombolFilter">
-                <button id="most-ordered-button" type="button">Merek Terbanyak</button>
-                <button id="least-ordered-button" type="button">Merek Terdikit</button>
-                <button id="filter-button" type="button">Filter Tanggal</button>
-            </div>
+            <button id="filter-button" type="button">Filter</button>
             <div id="filterTgl" style="display: none;">
-                <h3>Filter Transaksi</h3>
+                <h3>Rentang Tanggal</h3>
                 <form id="form-filter">
                     <div id="masukan">
                         <label for="date1">Dari Tanggal</label>
-                        <input type="date" id="date1" name="date1">
+                        <input type="date" id="date1" name="date1" required>
                         <label for="date2">Sampai Tanggal</label>
-                        <input type="date" id="date2" name="date2">
+                        <input type="date" id="date2" name="date2" required>
                     </div>
-                    <button type="submit" id="submit-button">Simpan</button>
+                    <button type="submit">Simpan</button>
                     <button type="button" id="cancel-button">Batal</button>
                 </form>
-            </div>            
+            </div>
             <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Merek</th>
-                        <th>Tanggal</th>
-                        <th>Lama waktu pemakaian (dalam menit)</th>
-                        <th>Jam Mulai</th>
-                        <th>Jam Selesai</th>
-                        <th>Tarif</th>
-                    </tr>
-                </thead>
-                <tbody id="laporan-table-body"></tbody>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Merek</th>
+                    <th>Tanggal</th>
+                    <th>Lama waktu pemakaian (dalam menit)</th>
+                    <th>Jam Mulai</th>
+                    <th>Jam Selesai</th>
+                    <th>Tarif</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Manuel</td>
+                    <td>Panasonic</td>
+                    <td>2-11-2024</td>
+                    <td>30</td>
+                    <td>09:10</td>
+                    <td>09:40</td>
+                    <td>450.000</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Teja</td>
+                    <td>Panasonic</td>
+                    <td>2-11-2024</td>
+                    <td>30</td>
+                    <td>10:10</td>
+                    <td>10:40</td>
+                    <td>450.000</td>
+                </tr>
+                <tr>
+                    <td id="kosong" colspan="6"></td>
+                    <td id="total">Total:</td>
+                    <td>900.000</td>
+                </tr>
             </table>
         </section>
     </div>
 </body>
+
 </html>
