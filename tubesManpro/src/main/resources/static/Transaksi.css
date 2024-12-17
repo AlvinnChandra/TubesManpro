@@ -1,4 +1,5 @@
-#form-tambah-transaksi {
+#form-tambah-transaksi,
+#form-edit-transaksi {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -13,32 +14,41 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-height: 90vh;
+    /* Maksimal tinggi 90% dari viewport */
+    overflow-y: auto;
+    /* Tambahkan scrollbar vertikal jika konten melebihi tinggi */
 }
 
-#form-tambah-transaksi h3 {
+#form-tambah-transaksi h3,
+#form-edit-transaksi h3 {
     text-align: center;
     margin-bottom: 20px;
 }
 
-#form-tambah-transaksi form {
+#form-tambah-transaksi form,
+#form-edit-transaksi form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-
-#form-tambah-transaksi label {
+#form-tambah-transaksi label,
+#form-edit-transaksi label {
     font-weight: bold;
 }
 
-#form-tambah-transaksi input, #form-tambah-transaksi select {
+#form-tambah-transaksi input,
+#form-tambah-transaksi select,
+#form-edit-transaksi input,
+#form-edit-transaksi select {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
 }
 
-
-#form-tambah-transaksi button {
+#form-tambah-transaksi button,
+#form-edit-transaksi button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -49,26 +59,26 @@
     margin-right: 10px;
 }
 
-
-#form-tambah-transaksi button:hover {
+#form-tambah-transaksi button:hover,
+#form-edit-transaksi button:hover {
     background-color: #0056b3;
 }
 
-
-#form-tambah-transaksi #cancel-transaksi-button {
+#form-tambah-transaksi #cancel-transaksi-button,
+#form-edit-transaksi #cancel-edit-transaksi-button {
     background-color: #dc3545;
 }
 
-
-#form-tambah-transaksi #cancel-transaksi-button:hover {
+#form-tambah-transaksi #cancel-transaksi-button:hover,
+#form-edit-transaksi #cancel-edit-transaksi-button:hover {
     background-color: #c82333;
 }
 
 .masukan {
     display: grid;
     grid-template-columns: 250px 250px;
-    justify-content: center;   
-    row-gap: 5px;  
+    justify-content: center;
+    row-gap: 5px;
     align-items: center;
 }
 
@@ -77,7 +87,8 @@ div :only-of-type label {
     margin-left: 25px;
 }
 
-div :only-of-type input, div :only-of-type select {
+div :only-of-type input,
+div :only-of-type select {
     grid-column: 2;
     margin-right: 25px;
 }
