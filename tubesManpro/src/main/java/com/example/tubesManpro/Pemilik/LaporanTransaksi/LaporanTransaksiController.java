@@ -40,4 +40,35 @@ public class LaporanTransaksiController {
     public List<LaporanTransaksi> getLeastOrderedBrand() {
         return laporanTransaksiRepository.findLeastOrderedBrand();
     }
-}
+
+    // Endpoint untuk total pendapatan keseluruhan
+    @GetMapping("/total-pendapatan")
+    public int getTotalPendapatan() {
+        return laporanTransaksiRepository.findTotalPendapatan();
+    }
+
+    // Endpoint untuk total pendapatan berdasarkan filter
+    @GetMapping("/total-pendapatan-filter")
+    public int getTotalPendapatanByFilter(
+            @RequestParam(required = false) Date dariTanggal,
+            @RequestParam(required = false) Date sampaiTanggal) {
+        if (dariTanggal != null && sampaiTanggal != null) {
+            return laporanTransaksiRepository.findTotalPendapatanByFilter(dariTanggal, sampaiTanggal);
+        } else {
+            return laporanTransaksiRepository.findTotalPendapatan();
+        }
+    }
+
+    // Endpoint untuk total pendapatan untuk merek terbanyak dipesan
+    @GetMapping("/total-pendapatan-most-ordered-brand")
+    public int getTotalPendapatanForMostOrderedBrand() {
+        return laporanTransaksiRepository.findTotalPendapatanForMostOrderedBrand();
+    }
+
+    // Endpoint untuk total pendapatan untuk merek paling sedikit dipesan
+    @GetMapping("/total-pendapatan-least-ordered-brand")
+    public int getTotalPendapatanForLeastOrderedBrand() {
+        return laporanTransaksiRepository.findTotalPendapatanForLeastOrderedBrand();
+    }
+
+    }

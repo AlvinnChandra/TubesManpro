@@ -129,6 +129,62 @@ document.getElementById('least-ordered-button').addEventListener('click', functi
         .catch(error => console.error('Gagal memuat data merek paling sedikit dipesan:', error));
 });
 
+function loadTotalPendapatan(dariTanggal = null, sampaiTanggal = null) {
+    let url = '/api/laporan/total-pendapatan';
+    if (dariTanggal && sampaiTanggal) {
+        url = `/api/laporan/total-pendapatan-filter?dariTanggal=${dariTanggal}&sampaiTanggal=${sampaiTanggal}`;
+    }
+
+    fetch(url)
+        .then(response => response.json())
+        .then(total => {
+            document.getElementById('total-pendapatan').textContent = total;
+        })
+        .catch(error => console.error('Gagal memuat total pendapatan:', error));
+}
+
+// Load total pendapatan saat halaman dimuat
+document.addEventListener('DOMContentLoaded', () => {
+    loadTotalPendapatan();
+});
+
+// Panggil fungsi setelah filter diterapkan
+document.getElementById('form-filter').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const date1 = document.getElementById('date1').value;
+    const date2 = document.getElementById('date2').value;
+
+    if (!date1 || !date2) {
+        alert('Silakan isi rentang tanggal.');
+        return;
+    }
+
+    fetch(`/api/laporan/filter?dariTanggal=${date1}&sampaiTanggal=${date2}`)
+        .then(response => response.json())
+        .then(laporanList => {
+            laporanTableBody.innerHTML = '';
+            laporanList.forEach(laporan => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${laporan.id}</td>
+                    <td>${laporan.nama}</td>
+                    <td>${laporan.merek}</td>
+                    <td>${laporan.tanggal}</td>
+                    <td>${laporan.waktuPakai}</td>
+                    <td>${laporan.jamMulai}</td>
+                    <td>${laporan.jamSelesai}</td>
+                    <td>${laporan.tarif}</td>
+                `;
+                laporanTableBody.appendChild(row);
+            });
+
+            // Load total pendapatan dengan filter
+            loadTotalPendapatan(date1, date2);
+        })
+        .catch(error => console.error('Gagal memuat data berdasarkan filter:', error));
+});
+
 
 loadLaporan();
 
